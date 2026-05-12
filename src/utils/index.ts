@@ -1,0 +1,1 @@
+export { compactHash } from './format'
