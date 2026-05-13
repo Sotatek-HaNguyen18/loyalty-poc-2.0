@@ -8,7 +8,7 @@ import {
 } from "lucide-react";
 
 export const navigationItems = [
-  { badge: undefined, icon: Grid2X2, id: "overall", label: "Tổng quan" },
+  { badge: undefined, icon: Grid2X2, id: "overview", label: "Tổng quan" },
   { badge: "E", icon: List, id: "listed-property", label: "Niêm yết tài sản" },
   {
     badge: "B",
