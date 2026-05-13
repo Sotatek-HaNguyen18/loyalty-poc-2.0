@@ -4,7 +4,15 @@ import { Bell, Menu, Search, Settings, Wallet } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { getHeaderBreadcrumbs } from "@/layouts/constants/breadcrumbs";
 
-export const Header = () => {
+type HeaderProps = {
+  isMobileSidebarOpen: boolean;
+  onToggleMobileSidebar: () => void;
+};
+
+export const Header = ({
+  isMobileSidebarOpen,
+  onToggleMobileSidebar,
+}: HeaderProps) => {
   const location = useLocation();
   const breadcrumbs = getHeaderBreadcrumbs(location.pathname);
 
@@ -14,6 +22,9 @@ export const Header = () => {
         aria-label="Mở menu"
         className="inline-flex! h-9! w-9! items-center! justify-center! border-0! bg-transparent! p-0! lg:hidden!"
         icon={<Menu className="h-5 w-5" />}
+        onClick={onToggleMobileSidebar}
+        aria-expanded={isMobileSidebarOpen}
+        aria-controls="mobile-sidebar"
         type="text"
       />
 
