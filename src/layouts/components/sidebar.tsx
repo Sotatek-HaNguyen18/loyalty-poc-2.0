@@ -1,115 +1,122 @@
-
-import { Grid2X2 } from 'lucide-react'
-import { useLocation, useNavigate } from 'react-router-dom'
-import { useAdminStore } from '@/hooks/use-admin-store'
-import { cn } from '@/lib/utils'
-import { paths } from '@/routes/paths'
-import { navigationItems } from '../constants/navigation-items'
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAdminStore } from "@/hooks/use-admin-store";
+import { cn } from "@/lib/utils";
+import { paths } from "@/routes/paths";
+import { navigationItems } from "../constants/navigation-items";
+import { Grid2X2 } from "lucide-react";
 
 export const Sidebar = () => {
-  const { activeModule, setActiveModule } = useAdminStore()
+  const { setActiveModule } = useAdminStore();
 
-  const location = useLocation()
-  const navigate = useNavigate()
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const activeModuleId =
     location.pathname === paths.batchReconciliation
-      ? 'batch-reconciliation'
+      ? "batch-reconciliation"
       : location.pathname === paths.listedProperty
-        ? 'listed-property'
-        : 'overall'
+        ? "listed-property"
+        : "overall";
 
   const handleNavigate = (moduleId: string) => {
-    setActiveModule(moduleId)
+    setActiveModule(moduleId);
 
-    if (moduleId === 'overall') {
-      navigate(paths.overall)
-      return
+    if (moduleId === "overall") {
+      navigate(paths.overall);
+      return;
     }
 
-    if (moduleId === 'batch-reconciliation') {
-      navigate(paths.batchReconciliation)
-      return
+    if (moduleId === "batch-reconciliation") {
+      navigate(paths.batchReconciliation);
+      return;
     }
 
-    navigate(paths.listedProperty)
-  }
+    navigate(paths.listedProperty);
+  };
 
   return (
-    <aside className="fixed inset-y-0 left-0 z-30 hidden w-[238px] flex-col bg-bidv-green text-white lg:flex">
-      <div className="flex h-[51px] items-center gap-3 border-b border-white/10 px-3.5">
-        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-bidv-gold text-xs font-black">
+    <aside className="fixed inset-y-0 left-0 z-30 hidden w-sidebar-w flex-col bg-bidv-green text-white lg:flex">
+      <div className="flex h-topbar-h items-center gap-2.5 border-b border-white/8 px-4 font-display">
+        <div className="flex h-8 w-8 items-center justify-center rounded bg-bidv-gold text-sm font-display font-extrabold text-bidv-green">
           B
         </div>
 
-        <div>
-          <div className="text-sm font-bold leading-4">BIDV RWA</div>
+        <div className="min-w-0 font-display text-[15px] font-bold tracking-tight">
+          <div className="truncate">BIDV RWA</div>
 
-          <div className="mt-1 text-[10px] uppercase tracking-[0.16em] text-white/55">
+          <div className="mt-0.25 text-[10px] font-medium uppercase tracking-widest text-white opacity-50">
             Admin Console
           </div>
         </div>
       </div>
 
-      <nav aria-label="Module nghiệp vụ" className="flex-1 px-2 pt-3">
+      <nav aria-label="Module nghiệp vụ" className="flex-1">
         <button
-          aria-current={activeModule === 'overall' ? 'page' : undefined}
-          className="mb-6 flex h-8 w-full items-center gap-3 rounded-md px-3 text-left text-sm font-semibold text-white/95 hover:bg-white/10"
-          onClick={() => handleNavigate('overall')}
+          aria-current={activeModuleId === "overall" ? "page" : undefined}
+          className={cn(
+            "relative mx-auto! my-px! flex w-[calc(100%-16px)] items-center gap-3 rounded-md px-3.5 py-[9px] text-left text-[13px]! font-medium! transition-colors cursor-pointer",
+            "text-white/78!",
+            activeModuleId !== "overall" &&
+              "hover:bg-white/6! hover:text-white!",
+            activeModuleId === "overall" &&
+              "bg-white/10! text-white! font-semibold!",
+          )}
+          onClick={() => handleNavigate("overall")}
           type="button"
         >
-          <Grid2X2 className="h-4 w-4" />
+          <Grid2X2 className="h-[18px] w-[18px] text-inherit" />
           Tổng quan
         </button>
 
-        <div className="mb-2 px-2 text-[11px] font-bold uppercase tracking-[0.16em] text-[#65a083]">
+        <div className="px-3 pb-1.5 pt-4 text-[10px] font-semibold uppercase tracking-[0.12em] text-white/40">
           Module nghiệp vụ
         </div>
 
-        <div className="space-y-1">
+        <div className="flex flex-col">
           {navigationItems.slice(1).map((item) => {
-            const Icon = item.icon
-            const isActive = activeModuleId === item.id
+            const Icon = item.icon;
+            const isActive = activeModuleId === item.id;
 
             return (
               <button
-                aria-current={isActive ? 'page' : undefined}
+                aria-current={isActive ? "page" : undefined}
                 className={cn(
-                  'flex h-[37px] w-full items-center gap-3 rounded-md px-3 text-left text-sm font-semibold transition-colors',
-                  isActive
-                    ? 'bg-white/13 text-white'
-                    : 'text-white/45 hover:bg-white/8 hover:text-white',
+                  "relative mx-auto! my-px! flex w-[calc(100%-16px)] items-center gap-3 rounded-md px-3.5 py-[9px] text-left text-[13px]! font-medium! transition-colors cursor-pointer",
+                  "text-white/78!",
+                  !isActive && "hover:bg-white/6! hover:text-white!",
+                  isActive && "bg-white/10! font-semibold! text-white!",
+                  item.disabled && "cursor-not-allowed opacity-40",
                 )}
-                disabled={item.disabled}
+                disabled={item.disabled ?? false}
                 key={item.id}
                 onClick={() => handleNavigate(item.id)}
                 type="button"
               >
-                <Icon className="h-4 w-4" />
+                <Icon className="h-[18px] w-[18px] text-inherit" />
 
                 <span className="min-w-0 flex-1 truncate">{item.label}</span>
 
                 {item.badge ? (
-                  <span className="flex h-[17px] min-w-[17px] items-center justify-center rounded bg-bidv-gold px-1 text-[10px] font-bold text-bidv-green">
+                  <span className="ml-auto flex min-w-[17px] items-center justify-center rounded-xs bg-bidv-gold px-1.5 py-px text-[10px] font-bold text-bidv-green">
                     {item.badge}
                   </span>
                 ) : null}
               </button>
-            )
+            );
           })}
         </div>
       </nav>
 
-      <div className="m-3 rounded-md bg-white/7 p-3 text-xs">
-        <div className="mb-2 flex items-center gap-2 font-semibold">
-          <span className="h-2 w-2 rounded-full bg-[#4ade80]" />
+      <div className="m-4 mt-auto rounded-md bg-white/4 p-3 text-[11px] text-white/65">
+        <div className="mb-1 flex items-center gap-1.5 text-white font-semibold">
+          <span className="h-1.5 w-1.5 rounded-full bg-[#5ed29a]" />
           Testnet · Polygon Mumbai
         </div>
 
-        <div className="font-mono text-[11px] text-white/50">
+        <div className="font-mono text-[10.5px] opacity-70">
           Block #5,284,729
         </div>
       </div>
     </aside>
-  )
-}
+  );
+};
