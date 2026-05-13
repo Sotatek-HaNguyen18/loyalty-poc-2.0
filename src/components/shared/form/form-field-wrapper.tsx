@@ -12,18 +12,28 @@ type FormFieldWrapperProps = {
   children: ReactNode;
 };
 
-export const FormFieldWrapper = ({ label, required, error, hint, children }: FormFieldWrapperProps) => {
+export const FormFieldWrapper = ({
+  label,
+  required,
+  error,
+  hint,
+  children,
+}: FormFieldWrapperProps) => {
   return (
-    <div className="space-y-2">
-      <label className="block text-sm font-medium text-[#17211d]">
+    <div className="space-y-1.5">
+      <label className="block text-[12.5px] font-medium text-text-2">
         {label}
 
-        {required ? <span className="ml-1 text-red-500">*</span> : null}
+        {required ? <span className="ml-0.5 text-danger">*</span> : null}
       </label>
 
       {children}
 
-      {error ? <Text className="!text-xs !text-red-500">{error}</Text> : hint ? <Text className="!text-xs !text-[#7d8a85]">{hint}</Text> : null}
+      {error ? (
+        <Text className="text-[11.5px]! text-red-500!">{error}</Text>
+      ) : hint ? (
+        <Text className="text-[11.5px]! text-text-3!">{hint}</Text>
+      ) : null}
     </div>
   );
 };

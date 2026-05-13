@@ -1,6 +1,6 @@
 import { Controller, useFormContext } from "react-hook-form";
 
-import { InputNumber } from "antd";
+import { InputNumber, Space } from "antd";
 
 import { FormFieldWrapper } from "./form-field-wrapper";
 
@@ -14,7 +14,15 @@ type FormNumberInputProps = {
   max?: number;
 };
 
-export const FormNumberInput = ({ name, label, required, hint, suffix, min, max }: FormNumberInputProps) => {
+export const FormNumberInput = ({
+  name,
+  label,
+  required,
+  hint,
+  suffix,
+  min,
+  max,
+}: FormNumberInputProps) => {
   const {
     control,
     formState: { errors },
@@ -27,34 +35,51 @@ export const FormNumberInput = ({ name, label, required, hint, suffix, min, max 
       control={control}
       name={name}
       render={({ field }) => (
-        <FormFieldWrapper error={error} hint={hint} label={label} required={required}>
-          <InputNumber
-            {...field}
-            className="w-full"
-            controls={false}
-            max={max}
-            min={min}
-            parser={(value) => {
-              if (!value) return "";
+        <FormFieldWrapper
+          error={error}
+          hint={hint}
+          label={label}
+          required={required}
+        >
+          <Space.Compact block className="mb-0!">
+            <InputNumber
+              {...field}
+              className="w-full! text-text! text-xs!"
+              controls={false}
+              max={max}
+              min={min}
+              parser={(value) => {
+                if (!value) return "";
 
-              return value.replace(/[^\d.]/g, "");
-            }}
-            size="large"
-            status={error ? "error" : undefined}
-            suffix={suffix}
-            onKeyDown={(e) => {
-              const allowedKeys = ["Backspace", "Delete", "ArrowLeft", "ArrowRight", "Tab"];
+                return value.replace(/[^\d.]/g, "");
+              }}
+              size="large"
+              status={error ? "error" : undefined}
+              onKeyDown={(e) => {
+                const allowedKeys = [
+                  "Backspace",
+                  "Delete",
+                  "ArrowLeft",
+                  "ArrowRight",
+                  "Tab",
+                ];
 
-              if (allowedKeys.includes(e.key)) {
-                return;
-              }
+                if (allowedKeys.includes(e.key)) {
+                  return;
+                }
 
-              // only allow digits
-              if (!/^\d$/.test(e.key)) {
-                e.preventDefault();
-              }
-            }}
-          />
+                // only allow digits
+                if (!/^\d$/.test(e.key)) {
+                  e.preventDefault();
+                }
+              }}
+            />
+            {suffix && (
+              <Space.Addon className="bg-app-bg! text-text-2! border-l! border-border-strong! text-xs! z-0!">
+                {suffix}
+              </Space.Addon>
+            )}
+          </Space.Compact>
         </FormFieldWrapper>
       )}
     />

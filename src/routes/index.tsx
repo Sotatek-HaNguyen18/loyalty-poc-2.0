@@ -3,6 +3,7 @@ import {
   BatchReconciliationPage,
   ListedPropertyPage,
   OverviewPage,
+  PricingPage,
 } from "@/pages";
 import { paths } from "./paths";
 import { ProtectedRoutes } from "./protected-routes";
@@ -18,6 +19,7 @@ export const AppRoutes = () => {
             element={<BatchReconciliationPage />}
             path={paths.batchReconciliation}
           />
+          <Route element={<PricingPage />} path={paths.pricing} />
         </Route>
         <Route
           element={<Navigate replace to={paths.listedProperty} />}

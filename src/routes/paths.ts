@@ -2,4 +2,5 @@ export const paths = {
   batchReconciliation: "/batch-reconciliation",
   listedProperty: "/listed-property",
   overview: "/",
+  pricing: "/pricing",
 };

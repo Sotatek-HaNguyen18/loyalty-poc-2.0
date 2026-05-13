@@ -1,21 +1,21 @@
-import { Controller, useFormContext } from 'react-hook-form'
+import { Controller, useFormContext } from "react-hook-form";
 
-import { Select } from 'antd'
+import { Select } from "antd";
 
-import { FormFieldWrapper } from './form-field-wrapper'
+import { FormFieldWrapper } from "./form-field-wrapper";
 
 type Option = {
-  label: string
-  value: string
-}
+  label: string;
+  value: string;
+};
 
 type FormSelectProps = {
-  name: string
-  label: string
-  options: Option[]
-  required?: boolean
-  hint?: string
-}
+  name: string;
+  label: string;
+  options: Option[];
+  required?: boolean;
+  hint?: string;
+};
 
 export const FormSelect = ({
   name,
@@ -27,9 +27,9 @@ export const FormSelect = ({
   const {
     control,
     formState: { errors },
-  } = useFormContext()
+  } = useFormContext();
 
-  const error = errors[name]?.message as string | undefined
+  const error = errors[name]?.message as string | undefined;
 
   return (
     <Controller
@@ -44,12 +44,14 @@ export const FormSelect = ({
         >
           <Select
             {...field}
+            className="w-full! text-text! text-xs!"
             options={options}
             size="large"
-            status={error ? 'error' : undefined}
+            style={{ width: "100%" }}
+            status={error ? "error" : undefined}
           />
         </FormFieldWrapper>
       )}
     />
-  )
-}
+  );
+};

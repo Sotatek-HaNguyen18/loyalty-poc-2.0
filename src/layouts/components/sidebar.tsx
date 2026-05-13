@@ -3,6 +3,7 @@ import { useAdminStore } from "@/hooks/use-admin-store";
 import { cn } from "@/lib/utils";
 import { paths } from "@/routes/paths";
 import { navigationItems } from "../constants/navigation-items";
+import type { ActiveModuleId } from "../types";
 import { Grid2X2 } from "lucide-react";
 
 type SidebarProps = {
@@ -16,12 +17,14 @@ export const Sidebar = ({ isMobileOpen, onCloseMobile }: SidebarProps) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const activeModuleId =
-    location.pathname === paths.batchReconciliation
-      ? "batch-reconciliation"
-      : location.pathname === paths.listedProperty
-        ? "listed-property"
-        : "overview";
+  let activeModuleId: ActiveModuleId = "overview";
+  if (location.pathname === paths.batchReconciliation) {
+    activeModuleId = "batch-reconciliation";
+  } else if (location.pathname === paths.pricing) {
+    activeModuleId = "pricing";
+  } else if (location.pathname === paths.listedProperty) {
+    activeModuleId = "listed-property";
+  }
 
   const handleNavigate = (moduleId: string) => {
     setActiveModule(moduleId);
@@ -34,6 +37,11 @@ export const Sidebar = ({ isMobileOpen, onCloseMobile }: SidebarProps) => {
 
     if (moduleId === "batch-reconciliation") {
       navigate(paths.batchReconciliation);
+      return;
+    }
+
+    if (moduleId === "pricing") {
+      navigate(paths.pricing);
       return;
     }
 

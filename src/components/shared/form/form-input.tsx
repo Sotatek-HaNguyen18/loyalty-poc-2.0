@@ -1,17 +1,17 @@
-import { Controller, useFormContext } from 'react-hook-form'
+import { Controller, useFormContext } from "react-hook-form";
 
-import { Input } from 'antd'
+import { Input } from "antd";
 
-import { FormFieldWrapper } from './form-field-wrapper'
+import { FormFieldWrapper } from "./form-field-wrapper";
 
 type FormInputProps = {
-  name: string
-  label: string
-  placeholder?: string
-  disabled?: boolean
-  required?: boolean
-  hint?: string
-}
+  name: string;
+  label: string;
+  placeholder?: string;
+  disabled?: boolean;
+  required?: boolean;
+  hint?: string;
+};
 
 export const FormInput = ({
   name,
@@ -24,9 +24,9 @@ export const FormInput = ({
   const {
     control,
     formState: { errors },
-  } = useFormContext()
+  } = useFormContext();
 
-  const error = errors[name]?.message as string | undefined
+  const error = errors[name]?.message as string | undefined;
 
   return (
     <Controller
@@ -41,13 +41,14 @@ export const FormInput = ({
         >
           <Input
             {...field}
+            className="w-full! text-text! text-xs!"
             disabled={disabled}
             placeholder={placeholder}
             size="large"
-            status={error ? 'error' : undefined}
+            status={error ? "error" : undefined}
           />
         </FormFieldWrapper>
       )}
     />
-  )
-}
+  );
+};
