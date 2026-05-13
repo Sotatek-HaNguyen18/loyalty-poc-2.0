@@ -1,17 +1,22 @@
+@import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap");
 @import "tailwindcss";
 
 :root {
-  color: #06120f;
-  background: #f5f7f6;
-  font-family: var(--font-sans);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
   /* Colors */
   --primary: #003120;
+  --primary-700: #084a32;
+  --primary-600: #135a40;
+  --primary-50: #e8efeb;
   --gold: #735c00;
+  --gold-600: #8a6f00;
+  --gold-50: #fbf5dc;
+  --bg: #f5f7f6;
+  --bg-alt: #fafbfa;
+  --card: #ffffff;
+  --text: #1a1f1c;
+  --text-2: #4a5550;
+  --text-3: #7b8580;
+  --text-disabled: #b4bdb8;
   --success: #1c7c4c;
   --success-bg: #e6f3eb;
   --danger: #ba1a1a;
@@ -20,23 +25,45 @@
   --warn-bg: #fdf2dd;
   --info: #1e5cb3;
   --info-bg: #e6efff;
-  --border: #dde4df;
+  --border: #e6e8e7;
+  --border-strong: #d1d6d3;
+  --border-soft: #eef0ef;
   --muted: #66756f;
+  --sidebar-w: 240px;
+  --topbar-h: 56px;
 
   /* Radius */
   --radius: 8px;
 }
 
 @theme inline {
-  --font-sans: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-display: "Manrope", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
 
   --color-bidv-green: var(--primary);
-  --color-bidv-green-soft: var(--success);
-  --color-bidv-gold: var(--gold);
-  --color-app-bg: var(--background);
-  --color-app-border: var(--border);
-  --color-muted-text: var(--muted);
 
+  --color-bidv-green-700: var(--primary-700);
+  --color-bidv-green-soft: var(--primary-600);
+  --color-bidv-green-success: var(--success);
+  --color-primary-50: var(--primary-50);
+  --color-bidv-gold: var(--gold);
+  --color-gold-50: var(--gold-50);
+  --color-app-bg: var(--bg);
+  --color-bg-alt: var(--bg-alt);
+  --color-card: var(--card);
+  --color-text: var(--text);
+  --color-text-2: var(--text-2);
+  --color-text-3: var(--text-3);
+  --color-text-disabled: var(--text-disabled);
+  --color-app-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-border-soft: var(--border-soft);
+  --color-muted-text: var(--muted);
+  --spacing-sidebar-w: var(--sidebar-w);
+  --spacing-topbar-h: var(--topbar-h);
+
+  --radius-xs: calc(var(--radius) - 4px); /* 4px */
   --radius-sm: calc(var(--radius) - 2px); /* 6px */
   --radius: var(--radius); /* 8px */
   --radius-lg: calc(var(--radius) + 4px); /* 12px */
@@ -48,9 +75,13 @@
 }
 
 body {
-  min-width: 320px;
-  min-height: 100vh;
-  margin: 0;
+  font-family: var(--font-body);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 button,

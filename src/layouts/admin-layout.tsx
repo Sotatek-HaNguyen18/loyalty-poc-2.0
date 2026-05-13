@@ -9,13 +9,13 @@ type AdminLayoutProps = {
 
 export const AdminLayout = ({ children }: AdminLayoutProps) => {
   return (
-    <div className="min-h-screen bg-app-bg text-[#06120f]">
+    <div className="min-h-screen">
       <Sidebar />
-
-      <div className="lg:pl-[238px]">
+      <div className="lg:pl-sidebar-w">
         <Header />
-
-        <main className="min-h-[calc(100vh-51px)] px-4 py-7 lg:px-8">{children ?? <Outlet />}</main>
+        <main className="min-h-[calc(100vh-var(--topbar-h))] px-6 py-6 pb-20 lg:px-8">
+          {children ?? <Outlet />}
+        </main>
       </div>
     </div>
   );
