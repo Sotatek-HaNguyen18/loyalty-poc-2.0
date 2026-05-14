@@ -1,0 +1,111 @@
+import { useForm } from "react-hook-form";
+import { useCreateCarbonStore } from "@/stores/useCreateCarbonStore";
+import { FileField, StepFooter, StepHeader } from "../components/shared";
+import type { CreateStepPageProps, LegalDocumentationData } from "./types";
+
+export const LegalDocumentationStep = ({
+  isFirstStep,
+  isLastStep,
+  onBack,
+  onNext,
+  onSaveDraft,
+}: CreateStepPageProps) => {
+  const {
+    legalDocumentation,
+    setLegalDocumentation,
+    basicInformation,
+    carbonProject,
+    tokenization,
+  } = useCreateCarbonStore();
+  const { control, handleSubmit } = useForm<LegalDocumentationData>({
+    defaultValues: legalDocumentation,
+  });
+
+  const onSubmit = (data: LegalDocumentationData) => {
+    console.log({
+      basicInformation,
+      carbonProject,
+      tokenization,
+      legalDocumentation: data,
+    });
+    setLegalDocumentation(data);
+    onNext();
+  };
+
+  return (
+    <form
+      className="rounded-[28px] border border-app-border bg-white p-8 shadow-[0_18px_55px_rgba(8,31,20,0.05)] xl:p-10"
+      onSubmit={handleSubmit(onSubmit)}
+    >
+      <StepHeader
+        description="Tải lên các tài liệu bắt buộc theo chuẩn Verra/Gold Standard. Hash của verification report + PDD sẽ được anchor on-chain trong CarbonRegistry."
+        stepLabel="Bước 4 / 4"
+        title="Tài liệu pháp lý"
+      />
+
+      <div className="mt-8 space-y-7">
+        <FileField
+          control={control}
+          helper="Theo chuẩn Verra (VCS)"
+          label="Project Design Document (PDD)"
+          isRequired={true}
+          name="pdd"
+        />
+
+        <FileField
+          control={control}
+          helper="SCS Global Services — phát hành trong 12 tháng"
+          label="Verification Report (VVB)"
+          isRequired={true}
+          name="verificationReport"
+        />
+
+        <FileField
+          control={control}
+          helper="Bản chính thức từ registry"
+          label="Tài liệu Methodology"
+          isRequired={true}
+          name="methodologyDoc"
+        />
+
+        <FileField
+          control={control}
+          helper="CDM Tool 01 hoặc tương đương"
+          label="Additionality Test"
+          isRequired={true}
+          name="additionalityTest"
+        />
+
+        <FileField
+          control={control}
+          helper="Tác động xã hội, đa dạng sinh học, cộng đồng"
+          label="ESG Impact Assessment (tùy chọn)"
+          name="esgImpact"
+        />
+
+        <FileField
+          control={control}
+          helper="CCB Standard hoặc Gold Standard SDG cert"
+          label="Co-benefit / SDG Certification (tùy chọn)"
+          name="sdgCert"
+        />
+
+        <div className="rounded-2xl bg-[#e9f0ff] px-6 py-4 text-sm leading-7 text-[#3459b8]">
+          <span className="font-semibold">Lưu ý:</span> Hash của Verification
+          Report và PDD sẽ được anchor lên smart contract{" "}
+          <span className="font-mono">CarbonRegistry</span>. Khi NĐT thực hiện
+          retirement on-chain, hệ thống sẽ tự động gọi API tới registry (Verra
+          (VCS)) để cancel cùng số VCU tương ứng — đảm bảo không
+          double-counting.
+        </div>
+      </div>
+
+      <StepFooter
+        isFirstStep={isFirstStep}
+        isLastStep={isLastStep}
+        onBack={onBack}
+        onSaveDraft={onSaveDraft}
+      />
+    </form>
+  );
+};

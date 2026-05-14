@@ -1,8 +1,13 @@
 import { Button } from "antd";
 
-import { Bell, Menu, Search, Settings, Wallet } from "lucide-react";
+import { shortenAddress } from "@/lib/wagmi";
+import { Bell, CreditCard, Menu, Search, Settings } from "lucide-react";
 import { useLocation } from "react-router-dom";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
+
 import { getHeaderBreadcrumbs } from "@/layouts/constants/breadcrumbs";
+import { useState } from "react";
+import { ConnectWalletModal } from "@/pages/listed-property/components/ConnectWalletModal";
 
 type HeaderProps = {
   isMobileSidebarOpen: boolean;
@@ -14,6 +19,11 @@ export const Header = ({
   onToggleMobileSidebar,
 }: HeaderProps) => {
   const location = useLocation();
+  const { address, isConnected } = useAccount();
+  const { connectors, connect, status } = useConnect();
+  const { disconnect } = useDisconnect();
+  const [showConnectModal, setShowConnectModal] = useState(false);
+
   const breadcrumbs = getHeaderBreadcrumbs(location.pathname);
 
   return (
@@ -71,14 +81,24 @@ export const Header = ({
 
         <div className="hidden h-[22px] w-px bg-app-border md:block" />
 
-        <Button
-          className="hidden! items-center! gap-2! rounded-full! border-0! bg-bidv-green! px-3.5! py-[7px]! text-xs! font-medium! text-white! transition-colors! hover:bg-bidv-green-700! md:inline-flex! cursor-pointer"
-          htmlType="button"
-          type="text"
-        >
-          <Wallet className="h-3.5 w-3.5" />
-          Kết nối ví Admin
-        </Button>
+        {isConnected && address ? (
+          <div className="flex items-center gap-2 border border-app-bg bg-app-bg p-1 rounded-full">
+            <div className="w-5 h-5 rounded-full bg-amber-700"></div>
+            <div className="h-1.5 w-1.5 rounded-full bg-bidv-green"></div>
+            <div>{shortenAddress(address)}</div>
+            <Button onClick={() => disconnect()}>Disconnect Wallet</Button>
+          </div>
+        ) : (
+          <Button
+            className="!hidden !h-[30px] !rounded-full !px-4 !text-xs md:!inline-flex"
+            type="primary"
+            disabled={status === "pending"}
+            onClick={() => setShowConnectModal(true)}
+          >
+            <CreditCard className="h-3.5 w-3.5" />
+            Kết nối ví Admin
+          </Button>
+        )}
 
         <div className="flex cursor-pointer items-center gap-2 rounded-full p-1 pr-2.5 transition-colors hover:bg-app-bg">
           <div className="grid h-7 w-7 place-items-center rounded-full bg-primary-50 text-[11px] font-semibold text-bidv-green">
@@ -93,6 +113,12 @@ export const Header = ({
           </div>
         </div>
       </div>
+
+      <ConnectWalletModal
+        open={showConnectModal}
+        onClose={() => setShowConnectModal(false)}
+        onConnect={() => connect({ connector: connectors[0] })}
+      />
     </header>
   );
 };
