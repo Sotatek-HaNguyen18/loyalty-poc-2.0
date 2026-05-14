@@ -1,5 +1,8 @@
+import { Button } from "antd";
 import { Download, Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { KindChip } from "@/components/shared/kind-chip";
+import { StatCard } from "@/components/shared/stat-card";
 import { paths } from "@/routes/paths";
 import { allocationRows, recentActivities } from "./constants";
 
@@ -25,22 +28,23 @@ export const OverviewPage = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            className="inline-flex items-center justify-center gap-1.5 rounded-sm border border-border-strong bg-card px-3.5! py-1.5! text-[13px]! font-medium! text-text! transition-colors hover:bg-app-bg cursor-pointer"
-            type="button"
+        <div className="flex w-full min-w-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-2">
+          <Button
+            className="w-full text-[13px]! sm:w-auto sm:shrink-0"
+            htmlType="button"
+            icon={<Download size={14} />}
           >
-            <Download className="h-3.5 w-3.5" />
-            Xuất báo cáo
-          </button>
-          <button
-            className="inline-flex items-center justify-center gap-1.5 rounded-sm border border-bidv-green bg-bidv-green px-3.5! py-1.5! text-[13px]! font-medium! text-white! transition-colors hover:bg-bidv-green-700 cursor-pointer"
+            <span className="font-medium">Xuất báo cáo</span>
+          </Button>
+          <Button
+            className="w-full text-[13px]! sm:w-auto sm:shrink-0"
+            htmlType="button"
+            icon={<Plus size={14} />}
             onClick={() => navigate(paths.listedProperty)}
-            type="button"
+            type="primary"
           >
-            <Plus className="h-3.5 w-3.5" />
-            Tạo niêm yết mới
-          </button>
+            <span className="font-medium">Tạo niêm yết mới</span>
+          </Button>
         </div>
       </div>
 
@@ -52,53 +56,30 @@ export const OverviewPage = () => {
       </div>
 
       <div className="mb-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
-        <article className="rounded-md border border-app-border bg-card p-4">
-          <div className="mb-1.5 text-[11.5px] font-medium uppercase tracking-[0.04em] text-text-3">
-            Tài sản đang niêm yết
-          </div>
-          <div className="font-display text-[22px] font-bold tracking-[-0.01em] text-text">
-            14
-          </div>
-          <div className="mt-1.5 text-[11.5px] font-medium text-success">
-            +2 trong 7 ngày
-          </div>
-        </article>
-
-        <article className="rounded-md border border-app-border bg-card p-4">
-          <div className="mb-1.5 text-[11.5px] font-medium uppercase tracking-[0.04em] text-text-3">
-            Tổng giá trị on-chain
-          </div>
-          <div className="font-display text-[22px] font-bold tracking-[-0.01em] text-text">
-            412,8 tỷ
-          </div>
-          <div className="mt-1.5 text-[11.5px] text-text-3">
-            VND · Quy đổi theo giá Oracle
-          </div>
-        </article>
-
-        <article className="rounded-md border border-app-border bg-card p-4">
-          <div className="mb-1.5 text-[11.5px] font-medium uppercase tracking-[0.04em] text-text-3">
-            Giao dịch hôm nay
-          </div>
-          <div className="font-display text-[22px] font-bold tracking-[-0.01em] text-text">
-            149
-          </div>
-          <div className="mt-1.5 text-[11.5px] font-medium text-success">
-            +18% so với hôm qua
-          </div>
-        </article>
-
-        <article className="rounded-md border border-app-border bg-card p-4">
-          <div className="mb-1.5 text-[11.5px] font-medium uppercase tracking-[0.04em] text-text-3">
-            Batch chưa đối soát
-          </div>
-          <div className="font-display text-[22px] font-bold tracking-[-0.01em] text-warn">
-            3
-          </div>
-          <div className="mt-1.5 text-[11.5px] font-medium text-danger">
-            1 lệch với Core
-          </div>
-        </article>
+        <StatCard
+          label="Tài sản đang niêm yết"
+          subClassName="font-medium text-success"
+          subValue="+2 trong 7 ngày"
+          value="14"
+        />
+        <StatCard
+          label="Tổng giá trị on-chain"
+          subValue="VND · Quy đổi theo giá Oracle"
+          value="412,8 tỷ"
+        />
+        <StatCard
+          label="Giao dịch hôm nay"
+          subClassName="font-medium text-success"
+          subValue="+18% so với hôm qua"
+          value="149"
+        />
+        <StatCard
+          label="Batch chưa đối soát"
+          subClassName="font-medium text-danger"
+          subValue="1 lệch với Core"
+          value="3"
+          variant="warning"
+        />
       </div>
 
       <div className="grid gap-4 xl:grid-cols-[2fr_1fr]">
@@ -116,15 +97,7 @@ export const OverviewPage = () => {
             {allocationRows.map((row) => (
               <div className="mb-3.5 last:mb-0" key={row.kind}>
                 <div className="mb-1.5 flex flex-col gap-2 sm:flex-row sm:items-center">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-app-bg py-0.5 pr-2 pl-1 text-[11.5px] font-semibold text-text-2">
-                    <span
-                      className="inline-flex h-[18px] w-[18px] items-center justify-center rounded-full text-[9px] font-extrabold text-white"
-                      style={{ background: row.gradient }}
-                    >
-                      {row.shortLabel}
-                    </span>
-                    {row.kind}
-                  </span>
+                  <KindChip label={row.kind} type={row.type} />
 
                   <div className="grid w-full grid-cols-[1fr_auto] gap-x-3 gap-y-1 sm:ml-auto sm:flex sm:w-auto sm:items-center sm:gap-x-3">
                     <span className="font-mono text-xs text-text-3 sm:whitespace-nowrap">
