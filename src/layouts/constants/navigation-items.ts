@@ -25,7 +25,6 @@ export const navigationItems = [
   },
   {
     badge: "C",
-    disabled: true,
     icon: DollarSign,
     id: "pricing",
     label: "Cập nhật giá",

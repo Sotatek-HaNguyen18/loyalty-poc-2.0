@@ -12,6 +12,10 @@ const getStatusType = (status: string) => {
       return "warning";
     case "Transfer":
       return "info";
+    case "On-chain":
+      return "success";
+    case "Off-chain":
+      return "warning";
     default:
       break;
   }
@@ -36,7 +40,9 @@ export const StatusBadge = ({ value }: { value: string }) => {
     }[status as StatusBadgeType] || "bg-gray-500";
 
   return (
-    <span className={`px-2 py-0.5 rounded-xs text-[11px] font-semibold flex items-center gap-1.5 w-fit ${styles}`}>
+    <span
+      className={`px-2 py-0.5 rounded-xs text-[11px] font-semibold flex items-center gap-1.5 w-fit ${styles}`}
+    >
       <span className={`w-1.5 h-1.5 rounded-full ${dot}`}></span>
       {value}
     </span>

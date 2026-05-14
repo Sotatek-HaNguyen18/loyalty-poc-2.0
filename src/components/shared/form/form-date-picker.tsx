@@ -11,9 +11,16 @@ type FormDatePickerProps = {
   label: string;
   required?: boolean;
   hint?: string;
+  showTime?: boolean;
 };
 
-export const FormDatePicker = ({ name, label, required, hint }: FormDatePickerProps) => {
+export const FormDatePicker = ({
+  name,
+  label,
+  required,
+  hint,
+  showTime,
+}: FormDatePickerProps) => {
   const {
     control,
     formState: { errors },
@@ -26,11 +33,20 @@ export const FormDatePicker = ({ name, label, required, hint }: FormDatePickerPr
       control={control}
       name={name}
       render={({ field }) => (
-        <FormFieldWrapper error={error} hint={hint} label={label} required={required}>
+        <FormFieldWrapper
+          error={error}
+          hint={hint}
+          label={label}
+          required={required}
+        >
           <DatePicker
-            format="MM/DD/YYYY"
+            className="w-full [&_.ant-picker-input>input]:text-xs!"
+            format={showTime ? "DD/MM/YYYY HH:mm" : "DD/MM/YYYY"}
             inputReadOnly
-            onChange={(date) => field.onChange(date?.toISOString()) ?? null}
+            onChange={(date) => field.onChange(date?.toISOString() ?? null)}
+            showTime={
+              showTime ? { format: "HH:mm", use12Hours: false } : undefined
+            }
             size="large"
             status={error ? "error" : undefined}
             value={field.value ? dayjs(field.value) : null}
