@@ -99,3 +99,17 @@ button,
 input {
   font: inherit;
 }
+
+.ant-input-group-wrapper {
+  .ant-input {
+    height: 48px !important;
+  }
+
+  .ant-input-group-addon {
+    height: 48px !important;
+  }
+}
+
+.ant-modal-container {
+  padding: 0 !important;
+}
