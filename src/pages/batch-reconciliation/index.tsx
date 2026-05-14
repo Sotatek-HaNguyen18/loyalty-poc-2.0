@@ -54,7 +54,7 @@ export const BatchReconciliationPage = () => {
           setAssetFilter={setAssetFilter}
           statusFilter={statusFilter}
           setStatusFilter={setStatusFilter}
-          filteredCount={12}
+          filteredCount={filteredData.length}
         />
         <DataTable assetFilter={assetFilter} statusFilter={statusFilter} onRowClick={setSelectedBatch} />
       </div>
