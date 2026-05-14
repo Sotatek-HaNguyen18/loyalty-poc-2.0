@@ -10,11 +10,11 @@ interface FilterSectionProps {
 
 export function FilterSection({ assetFilter, setAssetFilter, statusFilter, setStatusFilter, filteredCount }: FilterSectionProps) {
   return (
-    <div className="flex items-center justify-between mb-0 border border-app-border border-b-0  bg-white p-4 rounded-t-xl">
-      <div className="flex items-center gap-8">
-        <div className="flex items-center gap-3">
+    <div className="flex lg:flex-row lg:items-center  lg:justify-between flex-col gap-4  mb-0 border border-app-border border-b-0  bg-white p-4 rounded-t-xl">
+      <div className="flex lg:flex-row lg:items-center lg:gap-8 flex-col items-start gap-4">
+        <div className="flex lg:flex-row lg:items-center flex-col gap-3">
           <span className="text-xs font-semibold text-text-3">Loại tài sản:</span>
-          <div className="flex rounded-lg gap-1.5">
+          <div className="flex flex-wrap rounded-lg gap-1.5">
             {["Tất cả", "Vàng", "BĐS", "Carbon"].map((tab) => (
               <Button
                 color="default"
@@ -29,9 +29,9 @@ export function FilterSection({ assetFilter, setAssetFilter, statusFilter, setSt
             ))}
           </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex lg:flex-row lg:items-center flex-col gap-3">
           <span className="text-xs font-semibold text-text-3">Trạng thái:</span>
-          <div className="flex rounded-lg gap-1.5">
+          <div className="flex flex-wrap rounded-lg gap-1.5">
             {["Tất cả", "Khớp", "Lệch", "Đang xử lý"].map((tab) => (
               <Button
                 color="default"

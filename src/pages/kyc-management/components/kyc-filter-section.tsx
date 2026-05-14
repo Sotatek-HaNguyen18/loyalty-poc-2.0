@@ -35,7 +35,7 @@ export function KycFilterSection({
 
         <div className="flex sm:flex-row sm:items-center flex-col items-start gap-3">
           <span className="text-[11.5px] font-bold text-text-3 uppercase">KYC:</span>
-          <div className="flex rounded-lg gap-1.5">
+          <div className="flex  flex-wrap rounded-lg gap-1.5">
             {["Tất cả", "Level 1", "Level 2", "VIP"].map((tab) => (
               <Button
                 color="default"
@@ -52,7 +52,7 @@ export function KycFilterSection({
         </div>
         <div className="flex sm:flex-row sm:items-center flex-col items-start gap-3">
           <span className="text-[11.5px] font-bold text-text-3 uppercase">Trạng thái:</span>
-          <div className="flex rounded-lg gap-1.5">
+          <div className="flex flex-wrap rounded-lg gap-1.5">
             {["Tất cả", "Hoạt động", "Chờ duyệt", "Đóng băng"].map((tab) => {
               const labelMap: Record<string, string> = {
                 "Tất cả": "Tất cả",

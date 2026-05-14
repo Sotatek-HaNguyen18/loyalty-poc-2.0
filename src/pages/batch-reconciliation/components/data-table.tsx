@@ -121,7 +121,7 @@ export function DataTable({ assetFilter, statusFilter, onRowClick }: DataTablePr
         dataSource={filteredData}
         rowKey="id"
         pagination={false}
-        scroll={{ x: 1000 }}
+        scroll={{ x: "max-content" }}
         onRow={(record) => ({
           onClick: () => onRowClick(record),
           className: "cursor-pointer group",
