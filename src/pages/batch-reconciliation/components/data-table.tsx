@@ -4,6 +4,7 @@ import { ChevronRight } from "lucide-react";
 import type { AssetType, BatchRecord } from "../types";
 import { MOCK_DATA } from "../constants/mock-data";
 import { AssetIcon, StatusBadge } from "@/components/shared";
+import { getStatusVariant } from "@/utils";
 
 const columns: ColumnsType<BatchRecord> = [
   {
@@ -67,7 +68,10 @@ const columns: ColumnsType<BatchRecord> = [
     title: "TRẠNG THÁI",
     dataIndex: "status",
     key: "status",
-    render: (status) => <StatusBadge value={status} />,
+    render: (status) => {
+      const variant = getStatusVariant(status);
+      return <StatusBadge label={status} variant={variant} showDot />;
+    },
   },
   {
     title: "CORE BANKING",
@@ -117,6 +121,7 @@ export function DataTable({ assetFilter, statusFilter, onRowClick }: DataTablePr
         dataSource={filteredData}
         rowKey="id"
         pagination={false}
+        scroll={{ x: 1000 }}
         onRow={(record) => ({
           onClick: () => onRowClick(record),
           className: "cursor-pointer group",

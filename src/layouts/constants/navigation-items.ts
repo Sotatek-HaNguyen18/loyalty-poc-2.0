@@ -18,7 +18,6 @@ export const navigationItems = [
   },
   {
     badge: "A",
-    disabled: true,
     icon: UserRound,
     id: "kyc",
     label: "Quản lý KYC",

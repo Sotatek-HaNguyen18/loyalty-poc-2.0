@@ -7,6 +7,7 @@ import {
 } from "@/pages";
 import { paths } from "./paths";
 import { ProtectedRoutes } from "./protected-routes";
+import { KYCPage } from "@/pages/kyc-management";
 
 export const AppRoutes = () => {
   return (
@@ -20,6 +21,10 @@ export const AppRoutes = () => {
             path={paths.batchReconciliation}
           />
           <Route element={<PricingPage />} path={paths.pricing} />
+          <Route
+            element={<KYCPage />}
+            path={paths.kyc}
+          />
         </Route>
         <Route
           element={<Navigate replace to={paths.listedProperty} />}

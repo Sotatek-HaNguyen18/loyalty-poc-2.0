@@ -5,6 +5,7 @@ import type { BatchRecord, Transaction } from "../types";
 import { MOCK_TRANSACTIONS } from "../constants/mock-data";
 import { AssetIcon, StatusBadge } from "@/components/shared";
 import { useEffect, useState } from "react";
+import { getStatusVariant } from "@/utils";
 
 interface BatchDetailDrawerProps {
   batch: BatchRecord | null;
@@ -42,7 +43,7 @@ export function BatchDetailDrawer({ batch, onClose }: BatchDetailDrawerProps) {
       dataIndex: "type",
       key: "type",
       render: (type: string) => {
-        return <StatusBadge value={type} />;
+        return <StatusBadge label={type} variant={getStatusVariant(type)} showDot />;
       },
     },
     {
@@ -80,7 +81,7 @@ export function BatchDetailDrawer({ batch, onClose }: BatchDetailDrawerProps) {
                 <h3 className="text-lg font-bold! text-text mb-0!">Batch {batch.date}</h3>
                 <AssetIcon type={batch.assetType} />
 
-                <StatusBadge value={batch.status} />
+                <StatusBadge label={batch.status} variant={getStatusVariant(batch.status)} showDot />
               </div>
             </div>
 
