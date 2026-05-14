@@ -1,50 +1,50 @@
-import type { StatusBadgeType } from "@/pages/batch-reconciliation/types";
+import clsx from "clsx";
 
-const getStatusType = (status: string) => {
-  switch (status) {
-    case "Khớp":
-    case "Mint":
-      return "success";
-    case "Lệch":
-    case "Burn":
-      return "danger";
-    case "Đang xử lý":
-      return "warning";
-    case "Transfer":
-      return "info";
-    case "On-chain":
-      return "success";
-    case "Off-chain":
-      return "warning";
-    default:
-      break;
-  }
+export type BadgeVariant = "success" | "danger" | "warning" | "info" | "green" | "orange" | "red" | "blue" | "yellow" | "grey" | "gold";
+
+interface BadgeProps {
+  label: string;
+  variant?: BadgeVariant;
+  showDot?: boolean;
+  className?: string;
+}
+
+const variants: Record<BadgeVariant, string> = {
+  success: "bg-success-bg text-success",
+  danger: "bg-danger-bg text-danger",
+  warning: "bg-warn-bg text-warn",
+  info: "bg-info-bg text-info",
+
+  green: "bg-primary-50 text-bidv-green",
+  orange: "bg-amber-50 text-amber-700",
+  red: "bg-rose-50 text-rose-600",
+  blue: "bg-indigo-50 text-indigo-600",
+  yellow: "bg-yellow-50 text-yellow-700",
+  grey: "bg-app-bg text-text-2",
+  gold: "bg-gold-50 text-bidv-gold",
 };
-export const StatusBadge = ({ value }: { value: string }) => {
-  const status = getStatusType(value);
 
-  const styles =
-    {
-      success: "bg-success-bg text-success",
-      danger: "bg-danger-bg text-danger",
-      warning: "bg-warn-bg text-warn",
-      info: "bg-info-bg text-info",
-    }[status as StatusBadgeType] || "bg-gray-100 text-gray-700 border-gray-200";
+const dots: Record<BadgeVariant, string> = {
+  success: "bg-success",
+  danger: "bg-danger",
+  warning: "bg-warn",
+  info: "bg-info",
 
-  const dot =
-    {
-      success: "bg-success",
-      danger: "bg-danger",
-      warning: "bg-warn",
-      info: "bg-info",
-    }[status as StatusBadgeType] || "bg-gray-500";
+  green: "bg-emerald-500",
+  orange: "bg-amber-500",
+  red: "bg-rose-500",
+  blue: "bg-indigo-500",
+  yellow: "bg-yellow-500",
+  grey: "bg-text-2",
+  gold: "",
+};
 
+export const StatusBadge = ({ label, variant = "green", showDot = false, className }: BadgeProps) => {
   return (
-    <span
-      className={`px-2 py-0.5 rounded-xs text-[11px] font-semibold flex items-center gap-1.5 w-fit ${styles}`}
-    >
-      <span className={`w-1.5 h-1.5 rounded-full ${dot}`}></span>
-      {value}
+    <span className={clsx("inline-flex items-center gap-1.5 rounded-md px-2 py-0.5 text-[11px] font-semibold", variants[variant])}>
+      {showDot && <span className={clsx("h-1.5 w-1.5 rounded-full", dots[variant])} />}
+
+      <span className={className}>{label}</span>
     </span>
   );
 };
