@@ -1,5 +1,7 @@
-import { useForm } from "react-hook-form";
+import { CategoryType } from "@/constants/asset.enum";
+import { carbonListingService } from "@/services/asset.ts";
 import { useCreateCarbonStore } from "@/stores/useCreateCarbonStore";
+import { useForm } from "react-hook-form";
 import { FileField, StepFooter, StepHeader } from "../components/shared";
 import type { CreateStepPageProps, LegalDocumentationData } from "./types";
 
@@ -21,15 +23,40 @@ export const LegalDocumentationStep = ({
     defaultValues: legalDocumentation,
   });
 
-  const onSubmit = (data: LegalDocumentationData) => {
-    console.log({
-      basicInformation,
-      carbonProject,
-      tokenization,
-      legalDocumentation: data,
-    });
+  const onSubmit = async (data: LegalDocumentationData) => {
     setLegalDocumentation(data);
-    onNext();
+    try {
+      await carbonListingService.create({
+        categoryCode: CategoryType.CARBON,
+        name: basicInformation.listingId,
+        tokenCode: tokenization.tokenName,
+        tokenStandard: "ERC-1400 (Security Token)",
+        description: basicInformation.displayName,
+        shortDescription: basicInformation.shortDescription,
+        currentPrice: tokenization.initialPrice,
+        priceUnit: "tCO2e / ha",
+        priceChangePercent: 0.85,
+        buyFeePercent: tokenization.buyFee,
+        sellFeePercent: tokenization.sellFee,
+        liquidity24h: tokenization.maxPurchaseLimit,
+        totalRelease: 80000,
+        imageUrl: "string",
+        thumbnailUrl: "string",
+        isFeatured: false,
+        metadata: {
+          purity: "string",
+          backing_ratio: carbonProject.totalIssuedCredits,
+          converted_ratio: carbonProject.totalIssuedCredits,
+          supplier: carbonProject.vvb,
+          custodian: "BIDV",
+        },
+        status: "active",
+      });
+
+      onNext();
+    } catch (error) {
+      console.error("Failed to submit gold listing:", error);
+    }
   };
 
   return (

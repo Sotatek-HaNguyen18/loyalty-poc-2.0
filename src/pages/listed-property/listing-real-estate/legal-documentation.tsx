@@ -1,7 +1,9 @@
-import { useForm } from "react-hook-form";
 import { useCreateRealEstateStore } from "@/stores/useCreateRealEstateStore";
+import { useForm } from "react-hook-form";
 import { FileField, StepFooter, StepHeader } from "../components/shared";
 import type { CreateStepPageProps, LegalDocumentationData } from "./types";
+import { CategoryType } from "@/constants/asset.enum";
+import { realEstateListingService } from "@/services/asset.ts";
 
 export const LegalDocumentationStep = ({
   isFirstStep,
@@ -10,15 +12,51 @@ export const LegalDocumentationStep = ({
   onNext,
   onSaveDraft,
 }: CreateStepPageProps) => {
-  const { legalDocumentation, setLegalDocumentation } =
-    useCreateRealEstateStore();
+  const {
+    legalDocumentation,
+    setLegalDocumentation,
+    basicInformation,
+    tokenization,
+    realEstate,
+  } = useCreateRealEstateStore();
   const { control, handleSubmit } = useForm<LegalDocumentationData>({
     defaultValues: legalDocumentation,
   });
 
-  const onSubmit = (data: LegalDocumentationData) => {
+  const onSubmit = async (data: LegalDocumentationData) => {
     setLegalDocumentation(data);
-    onNext();
+    try {
+      await realEstateListingService.create({
+        categoryCode: CategoryType.REAL_ESTATE,
+        name: basicInformation.listingId,
+        tokenCode: tokenization.tokenName,
+        tokenStandard: "ERC-1400 (Security Token)",
+        description: basicInformation.displayName,
+        shortDescription: basicInformation.shortDescription,
+        currentPrice: tokenization.initialPrice,
+        priceUnit: "tỷ VNĐ",
+        priceChangePercent: 0.85,
+        buyFeePercent: tokenization.buyFee,
+        sellFeePercent: tokenization.sellFee,
+        liquidity24h: tokenization.maxPurchaseLimit,
+        totalRelease: 380000,
+        imageUrl: "string",
+        thumbnailUrl: "string",
+        isFeatured: false,
+        metadata: {
+          purity: "string",
+          backing_ratio: realEstate.floorArea,
+          converted_ratio: realEstate.valuationAmount,
+          supplier: tokenization.distributionModel,
+          custodian: "BIDV",
+        },
+        status: "active",
+      });
+
+      onNext();
+    } catch (error) {
+      console.error("Failed to submit gold listing:", error);
+    }
   };
 
   return (
