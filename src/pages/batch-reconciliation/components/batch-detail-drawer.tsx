@@ -74,11 +74,11 @@ export function BatchDetailDrawer({ batch, onClose }: BatchDetailDrawerProps) {
     <Drawer title={null} placement="right" onClose={onClose} open={!!batch} size={width} closable={false} styles={{ body: { padding: 0 } }}>
       {batch && (
         <div className="flex flex-col h-full bg-white">
-          <div className="p-6 border-b border-app-border flex sm:flex-row sm:items-center sm:justify-between flex-col gap-4 sticky top-0 bg-white/80 backdrop-blur-md z-10">
+          <div className="p-6 border-b border-app-border flex sm:flex-row sm:items-center sm:justify-between flex-col gap-2 sticky top-0 bg-white/80 backdrop-blur-md z-10">
             <div className="flex flex-col gap-1">
               <span className="text-[11px] font-semibold text-text-3 uppercase tracking-widest">CHI TIẾT BATCH</span>
               <div className="flex items-center gap-3">
-                <h3 className="text-lg font-bold! text-text mb-0!">Batch {batch.date}</h3>
+                <h3 className="2xl:text-lg! md:text-[16px]! font-bold! text-text mb-0!">Batch {batch.date}</h3>
                 <AssetIcon type={batch.assetType} />
 
                 <StatusBadge label={batch.status} variant={getStatusVariant(batch.status)} showDot />
