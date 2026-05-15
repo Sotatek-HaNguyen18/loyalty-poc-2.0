@@ -11,6 +11,7 @@ import {
   TextField,
 } from "../components/shared";
 import type { CreateStepPageProps, PhysicalGoldData } from "./types";
+import { useMemo } from "react";
 
 export const PhysicalGoldStep = ({
   isFirstStep,
@@ -20,9 +21,15 @@ export const PhysicalGoldStep = ({
   onSaveDraft,
 }: CreateStepPageProps) => {
   const { physicalGold, setPhysicalGold } = useCreateListedGoldStore();
-  const { control, handleSubmit } = useForm<PhysicalGoldData>({
+  const { control, handleSubmit, watch } = useForm<PhysicalGoldData>({
     defaultValues: physicalGold,
   });
+
+  const totalWeight = watch("totalWeight");
+
+  const convertedWeight = useMemo(() => {
+    return `= ${(totalWeight / 3.75).toFixed(2)} chỉ · ${(totalWeight / 37.5).toFixed(2)} lượng`;
+  }, [totalWeight]);
 
   const onSubmit = (data: PhysicalGoldData) => {
     setPhysicalGold(data);
@@ -43,9 +50,9 @@ export const PhysicalGoldStep = ({
       <div className="mt-8 grid gap-6 xl:grid-cols-3">
         <TextField
           control={control}
-          helper="= 666.67 chỉ · 66.67 lượng"
           label="Tổng khối lượng"
           isRequired={true}
+          helper={convertedWeight}
           name="totalWeight"
           rightAddon="gram"
         />

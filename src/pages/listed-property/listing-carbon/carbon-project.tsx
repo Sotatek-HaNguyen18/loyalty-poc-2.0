@@ -12,6 +12,7 @@ import {
   TextField,
 } from "../components/shared";
 import type { CreateStepPageProps, CarbonProjectData } from "./types";
+import { useMemo } from "react";
 
 export const CarbonProjectStep = ({
   isFirstStep,
@@ -21,9 +22,16 @@ export const CarbonProjectStep = ({
   onSaveDraft,
 }: CreateStepPageProps) => {
   const { carbonProject, setCarbonProject } = useCreateCarbonStore();
-  const { control, handleSubmit } = useForm<CarbonProjectData>({
+  const { control, handleSubmit, watch } = useForm<CarbonProjectData>({
     defaultValues: carbonProject,
   });
+
+  const totalIssuedCredits = watch("totalIssuedCredits");
+  const area = watch("area");
+
+  const convertedWeight = useMemo(() => {
+    return `~ ${totalIssuedCredits && area ? (totalIssuedCredits / area).toFixed(2) : 0} tCO2e / ha`;
+  }, [totalIssuedCredits, area]);
 
   const onSubmit = (data: CarbonProjectData) => {
     setCarbonProject(data);
@@ -155,7 +163,7 @@ export const CarbonProjectStep = ({
             />
             <TextField
               control={control}
-              helper="~ 166.7 tCO2e / ha"
+              helper={convertedWeight}
               label="Tổng tCO2e phát hành"
               isRequired={true}
               name="totalIssuedCredits"
@@ -203,7 +211,7 @@ export const CarbonProjectStep = ({
                               "flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
                               isSelected
                                 ? "border-bidv-green text-bidv-green bg-[#edf5f1]"
-                                : "border-app-border text-[#53635c] hover:bg-[#f7f9f8]"
+                                : "border-app-border text-[#53635c] hover:bg-[#f7f9f8]",
                             )}
                           >
                             {isSelected && <Check className="h-4 w-4" />}

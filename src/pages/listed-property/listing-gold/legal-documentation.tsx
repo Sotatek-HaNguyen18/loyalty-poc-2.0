@@ -1,7 +1,9 @@
 import { useForm } from "react-hook-form";
+import { goldListingService } from "../../../services/asset.ts";
 import { useCreateListedGoldStore } from "../../../stores/useCreateListedGoldStore";
 import { FileField, StepFooter, StepHeader } from "../components/shared";
 import type { CreateStepPageProps, LegalDocumentationData } from "./types";
+import { CategoryType } from "@/constants/asset.enum";
 
 export const LegalDocumentationStep = ({
   isFirstStep,
@@ -21,16 +23,41 @@ export const LegalDocumentationStep = ({
     defaultValues: legalDocumentation,
   });
 
-  const onSubmit = (data: LegalDocumentationData) => {
+  const onSubmit = async (data: LegalDocumentationData) => {
     setLegalDocumentation(data);
-    // This is the last step, so we might want to trigger a final submission or just log the final state
-    console.log("Final form data:", {
-      basicInformation,
-      physicalGold,
-      tokenization,
-      legalDocumentation: data,
-    });
-    onNext();
+
+    try {
+      await goldListingService.create({
+        categoryCode: CategoryType.GOLD,
+        name: basicInformation.listingId,
+        tokenCode: tokenization.tokenName,
+        tokenStandard: "ERC-1400 (Security Token)",
+        description: basicInformation.displayName,
+        shortDescription: basicInformation.shortDescription,
+        currentPrice: tokenization.initialPrice,
+        priceUnit: "chỉ",
+        priceChangePercent: 0.85,
+        buyFeePercent: tokenization.buyFee,
+        sellFeePercent: tokenization.sellFee,
+        liquidity24h: tokenization.maxPurchaseLimit,
+        totalRelease: 66666,
+        imageUrl: "string",
+        thumbnailUrl: "string",
+        isFeatured: false,
+        metadata: {
+          purity: physicalGold.purity,
+          backing_ratio: physicalGold.totalWeight,
+          converted_ratio: physicalGold.totalWeight / 3.75,
+          supplier: physicalGold.supplier,
+          custodian: "BIDV",
+        },
+        status: "active",
+      });
+
+      onNext();
+    } catch (error) {
+      console.error("Failed to submit gold listing:", error);
+    }
   };
 
   return (
