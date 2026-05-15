@@ -2,8 +2,8 @@ import { useCreateRealEstateStore } from "@/stores/useCreateRealEstateStore";
 import { useForm } from "react-hook-form";
 import { FileField, StepFooter, StepHeader } from "../components/shared";
 import type { CreateStepPageProps, LegalDocumentationData } from "./types";
-import { CategoryType } from "@/constants/asset.enum";
-import { realEstateListingService } from "@/services/asset.ts";
+import { CATEGORY_TYPE } from "@/services/assets/constants";
+import { createAsset } from "@/services";
 
 export const LegalDocumentationStep = ({
   isFirstStep,
@@ -25,9 +25,17 @@ export const LegalDocumentationStep = ({
 
   const onSubmit = async (data: LegalDocumentationData) => {
     setLegalDocumentation(data);
+
+    const valuationAmount = Number(realEstate.valuationAmount) || 0;
+    const tokenizationRatio = Number(tokenization.tokenizationRatio) || 0;
+    const totalRelease =
+      tokenizationRatio > 0
+        ? Math.floor(valuationAmount / tokenizationRatio)
+        : 0;
+
     try {
-      await realEstateListingService.create({
-        categoryCode: CategoryType.REAL_ESTATE,
+      await createAsset({
+        categoryCode: CATEGORY_TYPE.REAL_ESTATE,
         name: basicInformation.listingId,
         tokenCode: tokenization.tokenName,
         tokenStandard: "ERC-1400 (Security Token)",
@@ -39,14 +47,15 @@ export const LegalDocumentationStep = ({
         buyFeePercent: tokenization.buyFee,
         sellFeePercent: tokenization.sellFee,
         liquidity24h: tokenization.maxPurchaseLimit,
-        totalRelease: 380000,
+        totalRelease,
         imageUrl: "string",
         thumbnailUrl: "string",
         isFeatured: false,
         metadata: {
           purity: "string",
-          backing_ratio: realEstate.floorArea,
-          converted_ratio: realEstate.valuationAmount,
+          backing_ratio: Number(realEstate.floorArea) || 0,
+          converted_ratio:
+            valuationAmount > 0 ? valuationAmount / 1_000_000_000 : 0,
           supplier: tokenization.distributionModel,
           custodian: "BIDV",
         },

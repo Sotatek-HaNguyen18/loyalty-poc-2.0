@@ -1,6 +1,5 @@
 import {
   ArrowRightLeft,
-  Clock3,
   Grid2X2,
   List,
   UserRound,
@@ -28,5 +27,5 @@ export const navigationItems = [
     id: "pricing",
     label: "Cập nhật giá",
   },
-  { badge: "D", disabled: true, icon: Clock3, id: "limits", label: "Hạn mức" },
+  // { badge: "D", disabled: true, icon: Clock3, id: "limits", label: "Hạn mức" },
 ];

@@ -1,4 +1,5 @@
-import { useForm, Controller } from "react-hook-form";
+import { useMemo } from "react";
+import { useForm, Controller, useWatch } from "react-hook-form";
 import { Checkbox } from "antd";
 import { useCreateCarbonStore } from "@/stores/useCreateCarbonStore";
 import {
@@ -11,6 +12,11 @@ import {
 import type { CreateStepPageProps, TokenizationData } from "./types";
 import { Info } from "lucide-react";
 
+const TOKENIZATION_RATIO_OPTIONS = [
+  { label: "1 BCT = 1 tCO2e (chuẩn)", value: 1 },
+  { label: "1 BCT = 0.1 tCO2e (fractional)", value: 0.1 },
+] as const;
+
 export const TokenizationStep = ({
   isFirstStep,
   isLastStep,
@@ -18,17 +24,34 @@ export const TokenizationStep = ({
   onNext,
   onSaveDraft,
 }: CreateStepPageProps) => {
-  const { tokenization, setTokenization } = useCreateCarbonStore();
-  const { control, handleSubmit, watch } = useForm<TokenizationData>({
+  const { carbonProject, tokenization, setTokenization } =
+    useCreateCarbonStore();
+  const { control, handleSubmit } = useForm<TokenizationData>({
     defaultValues: tokenization,
   });
+  const tokenizationRatio = useWatch({
+    control,
+    name: "tokenizationRatio",
+  });
+
+  const numberFormatter = useMemo(() => new Intl.NumberFormat("vi-VN"), []);
+  const totalIssuedCredits = carbonProject.totalIssuedCredits || 0;
+  const vvb = carbonProject.vvb?.trim() || "đơn vị xác minh độc lập";
+
+  const issuedTokens = useMemo(() => {
+    if (!tokenizationRatio || !totalIssuedCredits) return 0;
+    return Math.floor(totalIssuedCredits / tokenizationRatio);
+  }, [tokenizationRatio, totalIssuedCredits]);
+
+  const ratioText = useMemo(() => {
+    if (!tokenizationRatio) return "-";
+    return tokenizationRatio.toLocaleString("vi-VN");
+  }, [tokenizationRatio]);
 
   const onSubmit = (data: TokenizationData) => {
     setTokenization(data);
     onNext();
   };
-
-  const totalTokens = 80000;
 
   return (
     <form
@@ -56,7 +79,7 @@ export const TokenizationStep = ({
             label="Tỷ lệ token hóa"
             isRequired={true}
             name="tokenizationRatio"
-            options={["1 BCT = 1 tCO2e (chuẩn)"]}
+            options={[...TOKENIZATION_RATIO_OPTIONS]}
           />
         </div>
 
@@ -67,11 +90,13 @@ export const TokenizationStep = ({
           </div>
           <div>
             <div className="text-base font-semibold text-[#16211d]">
-              Tổng số token sẽ được mint: {totalTokens.toLocaleString()} BCT
+              Tổng số token sẽ được mint: {numberFormatter.format(issuedTokens)}{" "}
+              BCT
             </div>
             <div className="mt-1 text-sm text-[#53635c]">
-              80.000 tCO2e ÷ 1 = 80.000 BCT · Mỗi BCT đại diện 1 tCO2e đã được
-              verify bởi SCS Global Services
+              {numberFormatter.format(totalIssuedCredits)} tCO2e ÷ {ratioText} ={" "}
+              {numberFormatter.format(issuedTokens)} BCT · Mỗi BCT đại diện{" "}
+              {ratioText} tCO2e đã được verify bởi {vvb}
             </div>
           </div>
         </div>
@@ -154,7 +179,7 @@ export const TokenizationStep = ({
             />
             <TextField
               control={control}
-              helper={`≤ ${totalTokens.toLocaleString()} BCT`}
+              helper={`≤ ${numberFormatter.format(issuedTokens)} BCT (tổng phát hành)`}
               label="Hạn mức tối đa / GD"
               isRequired={true}
               name="maxPurchaseLimit"

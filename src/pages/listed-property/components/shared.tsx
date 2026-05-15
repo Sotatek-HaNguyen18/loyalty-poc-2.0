@@ -117,7 +117,7 @@ export const SelectField = ({
   options = [],
   placeholder,
 }: FormFieldProps & {
-  options?: { label: string; value: string }[] | string[];
+  options?: { label: string; value: string | number }[] | string[];
 }) => {
   const formattedOptions = options.map((opt) =>
     typeof opt === "string" ? { label: opt, value: opt } : opt,

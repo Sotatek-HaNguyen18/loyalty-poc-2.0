@@ -65,7 +65,7 @@ const progressText = (step: number) =>
 
 const ListingRealEstatePageBase = () => {
   const navigate = useNavigate();
-  const [currentStep, setCurrentStep] = useState(0);
+  const [currentStep, setCurrentStep] = useState(1);
   const [showSign, setShowSign] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const { basicInformation, reset } = useCreateRealEstateStore();

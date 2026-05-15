@@ -35,7 +35,7 @@ export interface CarbonProjectData {
 
 export interface TokenizationData {
   tokenName: string;
-  tokenizationRatio: string;
+  tokenizationRatio: number;
   initialPrice: number;
   enableRetirement: boolean;
   retirementFee: number;

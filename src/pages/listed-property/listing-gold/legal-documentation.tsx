@@ -1,9 +1,9 @@
 import { useForm } from "react-hook-form";
-import { goldListingService } from "../../../services/asset.ts";
+import { createAsset } from "@/services";
 import { useCreateListedGoldStore } from "../../../stores/useCreateListedGoldStore";
 import { FileField, StepFooter, StepHeader } from "../components/shared";
 import type { CreateStepPageProps, LegalDocumentationData } from "./types";
-import { CategoryType } from "@/constants/asset.enum";
+import { CATEGORY_TYPE } from "@/services/assets/constants";
 
 export const LegalDocumentationStep = ({
   isFirstStep,
@@ -25,10 +25,13 @@ export const LegalDocumentationStep = ({
 
   const onSubmit = async (data: LegalDocumentationData) => {
     setLegalDocumentation(data);
+    const totalWeight = Number(physicalGold.totalWeight) || 0;
+    const ratio = Number(tokenization.tokenizationRatio) || 0.01;
+    const totalRelease = Math.floor(totalWeight / 3.75 / ratio);
 
     try {
-      await goldListingService.create({
-        categoryCode: CategoryType.GOLD,
+      await createAsset({
+        categoryCode: CATEGORY_TYPE.GOLD,
         name: basicInformation.listingId,
         tokenCode: tokenization.tokenName,
         tokenStandard: "ERC-1400 (Security Token)",
@@ -40,7 +43,7 @@ export const LegalDocumentationStep = ({
         buyFeePercent: tokenization.buyFee,
         sellFeePercent: tokenization.sellFee,
         liquidity24h: tokenization.maxPurchaseLimit,
-        totalRelease: 66666,
+        totalRelease,
         imageUrl: "string",
         thumbnailUrl: "string",
         isFeatured: false,

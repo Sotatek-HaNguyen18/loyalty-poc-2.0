@@ -1,4 +1,5 @@
-import { useForm } from "react-hook-form";
+import { useMemo } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { useCreateRealEstateStore } from "@/stores/useCreateRealEstateStore";
 import {
   DateField,
@@ -22,9 +23,29 @@ export const RealEstateStep = ({
   const { control, handleSubmit } = useForm<RealEstateData>({
     defaultValues: realEstate,
   });
+  const valuationAmount = useWatch({
+    control,
+    name: "valuationAmount",
+  });
+
+  const valuationAmountHelper = useMemo(() => {
+    const amount = Number(valuationAmount) || 0;
+    if (!amount) return "= — tỷ VND";
+
+    const ty = amount / 1_000_000_000;
+    const formatted =
+      ty % 1 === 0
+        ? ty.toLocaleString("vi-VN", { maximumFractionDigits: 0 })
+        : ty.toLocaleString("vi-VN", { maximumFractionDigits: 2 });
+
+    return `= ${formatted} tỷ VND`;
+  }, [valuationAmount]);
 
   const onSubmit = (data: RealEstateData) => {
-    setRealEstate(data);
+    setRealEstate({
+      ...data,
+      valuationAmount: Number(data.valuationAmount) || 0,
+    });
     onNext();
   };
 
@@ -188,7 +209,7 @@ export const RealEstateStep = ({
             />
             <TextField
               control={control}
-              helper="= 380 tỷ VND"
+              helper={valuationAmountHelper}
               label="Giá trị định giá (VND)"
               isRequired={true}
               name="valuationAmount"

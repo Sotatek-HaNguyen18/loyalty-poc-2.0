@@ -1,5 +1,6 @@
 import { CircleDollarSign } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { useForm, useWatch } from "react-hook-form";
+import { useMemo } from "react";
 import { useCreateListedGoldStore } from "../../../stores/useCreateListedGoldStore";
 import {
   SectionHeading,
@@ -17,10 +18,27 @@ export const TokenizationStep = ({
   onNext,
   onSaveDraft,
 }: CreateStepPageProps) => {
-  const { tokenization, setTokenization } = useCreateListedGoldStore();
+  const { physicalGold, tokenization, setTokenization } =
+    useCreateListedGoldStore();
   const { control, handleSubmit } = useForm<TokenizationData>({
     defaultValues: tokenization,
   });
+  const tokenizationRatio = useWatch({
+    control,
+    name: "tokenizationRatio",
+  });
+  const totalWeight = physicalGold.totalWeight || 0;
+
+  const numberFormatter = useMemo(() => new Intl.NumberFormat("vi-VN"), []);
+  const totalTokens = useMemo(() => {
+    if (!tokenizationRatio || !totalWeight) return 0;
+
+    return totalWeight / 3.75 / tokenizationRatio;
+  }, [tokenizationRatio, totalWeight]);
+  const issuedTokens = Math.floor(totalTokens);
+  const ratioText = tokenizationRatio
+    ? tokenizationRatio.toLocaleString("vi-VN")
+    : "-";
 
   const onSubmit = (data: TokenizationData) => {
     setTokenization(data);
@@ -51,7 +69,10 @@ export const TokenizationStep = ({
           label="Tỷ lệ token hóa"
           isRequired={true}
           name="tokenizationRatio"
-          options={["1 BGT = 0,01 chỉ"]}
+          options={[
+            { label: "1 BGT = 0,01 chỉ", value: 0.01 },
+            { label: "1 BGT = 1 chỉ", value: 1 },
+          ]}
         />
       </div>
 
@@ -62,10 +83,12 @@ export const TokenizationStep = ({
           </div>
           <div>
             <div className="text-base font-semibold text-[#0a3d2f]">
-              Tổng số token sẽ được mint: 66.666 BGT
+              Tổng số token sẽ được mint: {numberFormatter.format(issuedTokens)}{" "}
+              BGT
             </div>
             <div className="mt-2 text-sm text-[#53635c]">
-              2500g × (1 chỉ / 3,75g) ÷ 0.01 = 66.666 BGT
+              {numberFormatter.format(totalWeight)}g × (1 chỉ / 3,75g) ÷{" "}
+              {ratioText} = {numberFormatter.format(issuedTokens)} BGT
             </div>
           </div>
         </div>
@@ -110,7 +133,7 @@ export const TokenizationStep = ({
           />
           <TextField
             control={control}
-            helper="≤ 66.666 BGT (tổng phát hành)"
+            helper={`≤ ${numberFormatter.format(issuedTokens)} BGT (tổng phát hành)`}
             label="Hạn mức tối đa / GD"
             isRequired={true}
             name="maxPurchaseLimit"

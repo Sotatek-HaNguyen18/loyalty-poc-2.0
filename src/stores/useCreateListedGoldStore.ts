@@ -33,7 +33,7 @@ const initialState = {
     minPurchaseLimit: 0,
     sellFee: 0,
     tokenName: "",
-    tokenizationRatio: "",
+    tokenizationRatio: 0.01,
   },
 };
 

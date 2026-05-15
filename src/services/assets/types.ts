@@ -1,3 +1,14 @@
+import type { AssetStatus, CategoryType } from "@/types/assets";
+
+export type GetAssetsParams = {
+  category?: CategoryType;
+  status?: AssetStatus;
+  search?: string;
+  page?: number;
+  limit?: number;
+  sort?: "newest" | "price_asc" | "price_desc";
+};
+
 export interface IListingRequest {
   categoryCode: string;
   name: string;
