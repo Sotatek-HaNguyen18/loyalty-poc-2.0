@@ -29,7 +29,7 @@ const initialState = {
   },
   tokenization: {
     tokenName: "",
-    tokenizationRatio: "",
+    tokenizationRatio: 1,
     initialPrice: 0,
     enableRetirement: true,
     retirementFee: 0,

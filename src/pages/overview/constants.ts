@@ -12,7 +12,7 @@ export const allocationRows = [
     count: 4,
     kind: "Bất động sản",
     share: 24.9,
-    type: "real-estate" as const,
+    type: "real_estate" as const,
     value: "102.800",
   },
   {

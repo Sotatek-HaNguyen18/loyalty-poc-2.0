@@ -28,7 +28,7 @@ export interface PhysicalGoldData {
 
 export interface TokenizationData {
   tokenName: string;
-  tokenizationRatio: string;
+  tokenizationRatio: number;
   initialPrice: number;
   buyFee: number;
   sellFee: number;

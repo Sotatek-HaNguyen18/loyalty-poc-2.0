@@ -1,5 +1,5 @@
-import { CategoryType } from "@/constants/asset.enum";
-import { carbonListingService } from "@/services/asset.ts";
+import { CATEGORY_TYPE } from "@/services/assets/constants";
+import { createAsset } from "@/services";
 import { useCreateCarbonStore } from "@/stores/useCreateCarbonStore";
 import { useForm } from "react-hook-form";
 import { FileField, StepFooter, StepHeader } from "../components/shared";
@@ -25,9 +25,17 @@ export const LegalDocumentationStep = ({
 
   const onSubmit = async (data: LegalDocumentationData) => {
     setLegalDocumentation(data);
+
+    const totalIssuedCredits = Number(carbonProject.totalIssuedCredits) || 0;
+    const tokenizationRatio = Number(tokenization.tokenizationRatio) || 0;
+    const totalRelease =
+      tokenizationRatio > 0
+        ? Math.floor(totalIssuedCredits / tokenizationRatio)
+        : 0;
+
     try {
-      await carbonListingService.create({
-        categoryCode: CategoryType.CARBON,
+      await createAsset({
+        categoryCode: CATEGORY_TYPE.CARBON,
         name: basicInformation.listingId,
         tokenCode: tokenization.tokenName,
         tokenStandard: "ERC-1400 (Security Token)",
@@ -39,14 +47,14 @@ export const LegalDocumentationStep = ({
         buyFeePercent: tokenization.buyFee,
         sellFeePercent: tokenization.sellFee,
         liquidity24h: tokenization.maxPurchaseLimit,
-        totalRelease: 80000,
+        totalRelease,
         imageUrl: "string",
         thumbnailUrl: "string",
         isFeatured: false,
         metadata: {
           purity: "string",
-          backing_ratio: carbonProject.totalIssuedCredits,
-          converted_ratio: carbonProject.totalIssuedCredits,
+          backing_ratio: Number(carbonProject.area) || 0,
+          converted_ratio: totalIssuedCredits,
           supplier: carbonProject.vvb,
           custodian: "BIDV",
         },

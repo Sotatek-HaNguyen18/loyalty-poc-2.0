@@ -32,7 +32,7 @@ const initialState = {
   },
   tokenization: {
     tokenName: "",
-    tokenizationRatio: "",
+    tokenizationRatio: 1_000_000,
     initialPrice: 0,
     distributionModel: "",
     expectedYield: 0,

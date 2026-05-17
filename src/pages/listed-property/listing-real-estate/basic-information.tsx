@@ -18,9 +18,11 @@ export const BasicInformationStep = ({
   onSaveDraft,
 }: CreateStepPageProps) => {
   const { basicInformation, setBasicInformation } = useCreateRealEstateStore();
-  const { control, handleSubmit } = useForm<BasicInformationData>({
+  const { control, handleSubmit, watch } = useForm<BasicInformationData>({
     defaultValues: basicInformation,
   });
+
+  const shortDescription = watch("shortDescription");
 
   const onSubmit = (data: BasicInformationData) => {
     setBasicInformation(data);
@@ -66,7 +68,7 @@ export const BasicInformationStep = ({
         <div className="xl:col-span-2">
           <TextAreaField
             control={control}
-            helper="154/500 ký tự"
+            helper={`${shortDescription?.length || 0}/500 ký tự`}
             label="Mô tả ngắn"
             isRequired={true}
             placeholder="Mô tả tóm tắt về vị trí và tiềm năng dự án..."

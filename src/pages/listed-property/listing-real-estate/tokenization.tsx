@@ -1,4 +1,6 @@
-import { useForm } from "react-hook-form";
+import { Info } from "lucide-react";
+import { useMemo } from "react";
+import { useForm, useWatch } from "react-hook-form";
 import { useCreateRealEstateStore } from "@/stores/useCreateRealEstateStore";
 import {
   SectionHeading,
@@ -8,7 +10,12 @@ import {
   TextField,
 } from "../components/shared";
 import type { CreateStepPageProps, TokenizationData } from "./types";
-import { Info } from "lucide-react";
+
+const TOKENIZATION_RATIO_OPTIONS = [
+  { label: "1 BRT = 100.000 VND", value: 100_000 },
+  { label: "1 BRT = 1.000.000 VND", value: 1_000_000 },
+  { label: "1 BRT = 10.000.000 VND", value: 10_000_000 },
+] as const;
 
 export const TokenizationStep = ({
   isFirstStep,
@@ -19,20 +26,62 @@ export const TokenizationStep = ({
 }: CreateStepPageProps) => {
   const { tokenization, setTokenization, realEstate } =
     useCreateRealEstateStore();
-  const { control, handleSubmit, watch } = useForm<TokenizationData>({
+  const { control, handleSubmit } = useForm<TokenizationData>({
     defaultValues: tokenization,
   });
+  const tokenizationRatio = useWatch({
+    control,
+    name: "tokenizationRatio",
+  });
+  const initialPrice = useWatch({
+    control,
+    name: "initialPrice",
+  });
+
+  const numberFormatter = useMemo(() => new Intl.NumberFormat("vi-VN"), []);
+  const valuationAmount = realEstate.valuationAmount || 0;
+  const floorArea = realEstate.floorArea || 0;
+
+  const issuedTokens = useMemo(() => {
+    if (!tokenizationRatio || !valuationAmount) return 0;
+    return Math.floor(valuationAmount / tokenizationRatio);
+  }, [tokenizationRatio, valuationAmount]);
+
+  const sqmPerToken = useMemo(() => {
+    if (!issuedTokens || !floorArea) return 0;
+    return floorArea / issuedTokens;
+  }, [issuedTokens, floorArea]);
+
+  const ratioLabel = useMemo(() => {
+    if (!tokenizationRatio) return "-";
+    return `${numberFormatter.format(tokenizationRatio)} VND/BRT`;
+  }, [tokenizationRatio, numberFormatter]);
+
+  const premiumPercent = useMemo(() => {
+    const price = Number(initialPrice) || 0;
+    if (!valuationAmount || !issuedTokens || !price) return null;
+
+    const initialMarketCap = issuedTokens * price;
+    return ((initialMarketCap - valuationAmount) / valuationAmount) * 100;
+  }, [initialPrice, valuationAmount, issuedTokens]);
+
+  const initialPriceHelper = useMemo(() => {
+    if (!tokenizationRatio) {
+      return "Đối chiếu mệnh giá quy ước · Premium —";
+    }
+
+    const premiumText =
+      premiumPercent == null
+        ? "—"
+        : `${premiumPercent >= 0 ? "+" : ""}${premiumPercent.toFixed(2)}%`;
+
+    return `Đối chiếu mệnh giá ${numberFormatter.format(tokenizationRatio)} VND · Premium ${premiumText}`;
+  }, [tokenizationRatio, premiumPercent, numberFormatter]);
 
   const onSubmit = (data: TokenizationData) => {
     setTokenization(data);
     onNext();
   };
-
-  const initialPrice = watch("initialPrice");
-  // Mock calculation for the info box based on design image
-  const totalTokens = realEstate.valuationAmount
-    ? Math.floor(realEstate.valuationAmount / 1000000)
-    : 380000;
 
   return (
     <form
@@ -60,7 +109,7 @@ export const TokenizationStep = ({
             label="Tỷ lệ token hóa"
             isRequired={true}
             name="tokenizationRatio"
-            options={["1 BRT = 1.000.000 VND", "1 BRT = 500.000 VND"]}
+            options={[...TOKENIZATION_RATIO_OPTIONS]}
           />
         </div>
 
@@ -71,13 +120,19 @@ export const TokenizationStep = ({
           </div>
           <div>
             <div className="text-base font-semibold text-[#16211d]">
-              Tổng số token sẽ được mint: {totalTokens.toLocaleString()} BRT
+              Tổng số token sẽ được mint: {numberFormatter.format(issuedTokens)}{" "}
+              BRT
             </div>
             <div className="mt-1 text-sm text-[#53635c]">
-              Định giá{" "}
-              {realEstate.valuationAmount?.toLocaleString() || "380 tỷ"} VND ÷
-              1.000.000 VND/BRT = {totalTokens.toLocaleString()} BRT · Mỗi BRT
-              đại diện cho 0.0216 m² sàn
+              Định giá {numberFormatter.format(valuationAmount)} VND ÷{" "}
+              {ratioLabel} = {numberFormatter.format(issuedTokens)} BRT · Mỗi
+              BRT đại diện cho{" "}
+              {sqmPerToken > 0
+                ? sqmPerToken.toLocaleString("vi-VN", {
+                    maximumFractionDigits: 4,
+                  })
+                : "-"}{" "}
+              m² sàn
             </div>
           </div>
         </div>
@@ -85,7 +140,7 @@ export const TokenizationStep = ({
         <div className="grid gap-6 xl:grid-cols-2">
           <TextField
             control={control}
-            helper="Đối chiếu mệnh giá 1.000.000 VND · Premium +5.00%"
+            helper={initialPriceHelper}
             label="Giá khởi tạo trên sàn"
             isRequired={true}
             name="initialPrice"
@@ -149,7 +204,7 @@ export const TokenizationStep = ({
             />
             <TextField
               control={control}
-              helper={`≤ ${totalTokens.toLocaleString()} BRT (tổng phát hành)`}
+              helper={`≤ ${numberFormatter.format(issuedTokens)} BRT (tổng phát hành)`}
               label="Hạn mức tối đa / GD"
               isRequired={true}
               name="maxPurchaseLimit"

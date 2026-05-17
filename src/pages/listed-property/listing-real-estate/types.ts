@@ -45,7 +45,7 @@ export interface RealEstateData {
 
 export interface TokenizationData {
   tokenName: string;
-  tokenizationRatio: string;
+  tokenizationRatio: number;
   initialPrice: number;
   distributionModel: string;
   expectedYield: number;

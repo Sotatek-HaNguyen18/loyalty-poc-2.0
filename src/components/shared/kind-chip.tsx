@@ -1,6 +1,6 @@
 interface KindChipProps {
   label: string;
-  type?: "gold" | "real-estate" | "carbon";
+  type?: "gold" | "real_estate" | "carbon";
 }
 
 export function KindChip({ label, type = "gold" }: KindChipProps) {
@@ -11,7 +11,7 @@ export function KindChip({ label, type = "gold" }: KindChipProps) {
       symbol: "V",
     },
 
-    "real-estate": {
+    real_estate: {
       dot: "bg-gradient-to-br from-[#4a7ec2] to-[#1e5cb3]",
       text: "text-[#1f2937]",
       symbol: "BĐS",
@@ -36,7 +36,8 @@ export function KindChip({ label, type = "gold" }: KindChipProps) {
         bg-[#f3f4f6]
         px-1.5
         py-1
-      ">
+      "
+    >
       <div
         className={`
           flex items-center justify-center
@@ -48,7 +49,8 @@ export function KindChip({ label, type = "gold" }: KindChipProps) {
           leading-none
           text-white
           ${current.dot}
-        `}>
+        `}
+      >
         {current.symbol}
       </div>
 
@@ -58,7 +60,8 @@ export function KindChip({ label, type = "gold" }: KindChipProps) {
           text-[12px]
           font-semibold
           ${current.text}
-        `}>
+        `}
+      >
         {label}
       </span>
     </div>

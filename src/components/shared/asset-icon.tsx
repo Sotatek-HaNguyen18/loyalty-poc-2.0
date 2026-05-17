@@ -6,8 +6,7 @@ export const AssetIcon = ({ type }: { type: AssetType }) => {
     case "Gold":
       return <KindChip label="Vàng" type="gold" />;
     case "RealEstate":
-      return <KindChip label="Bất động sản" type="real-estate" />;
-
+      return <KindChip label="Bất động sản" type="real_estate" />;
     case "Carbon":
       return <KindChip label="Carbon Credit" type="carbon" />;
   }
