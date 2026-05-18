@@ -442,7 +442,7 @@ export const ListedPropertyPage = () => {
                     <td className="px-4 py-4 align-middle">
                       {asset.txHash ? (
                         <a
-                          className="font-mono text-xs text-bidv-green underline decoration-dotted"
+                          className="font-mono! text-xs! text-bidv-green! underline! decoration-dotted!"
                           href={`https://polygonscan.com/tx/${asset.txHash}`}
                           rel="noreferrer"
                           target="_blank"
