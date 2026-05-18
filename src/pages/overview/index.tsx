@@ -1,13 +1,72 @@
+import { useMemo } from "react";
 import { Button } from "antd";
 import { Plus } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { KindChip } from "@/components/shared/kind-chip";
 import { StatCard } from "@/components/shared/stat-card";
 import { paths } from "@/routes/paths";
-import { allocationRows } from "./constants";
+import { getOverviewSummary, type OverviewSummary } from "@/services";
+
+const numberFormatter = new Intl.NumberFormat("vi-VN");
+const decimalFormatter = new Intl.NumberFormat("vi-VN", {
+  maximumFractionDigits: 1,
+});
+const millionFormatter = new Intl.NumberFormat("vi-VN", {
+  maximumFractionDigits: 0,
+});
+
+const categoryColorMap: Record<
+  OverviewSummary["allocation"][number]["categoryType"],
+  string
+> = {
+  gold: "#735c00",
+  real_estate: "#1e5cb3",
+  carbon: "#1c7c4c",
+};
+
+const toSignedPercentText = (value: number | null) => {
+  if (value == null) return "— so với hôm qua";
+  if (value > 0) return `+${decimalFormatter.format(value)}% so với hôm qua`;
+  return `${decimalFormatter.format(value)}% so với hôm qua`;
+};
 
 export const OverviewPage = () => {
   const navigate = useNavigate();
+  const { data } = useQuery({
+    queryFn: getOverviewSummary,
+    queryKey: ["overview-summary"],
+    staleTime: 60_000,
+  });
+
+  const listedAssetsValue = data?.cards.listedAssets.value ?? 0;
+  const listedAssetsDelta = data?.cards.listedAssets.deltaLast7Days ?? 0;
+  const totalOnChainValueVnd = data?.cards.totalOnChainValueVnd ?? 0;
+  const txTodayValue = data?.cards.transactionsToday.value ?? 0;
+  const txDelta = data?.cards.transactionsToday.deltaPercentVsYesterday ?? null;
+  const unreconciledBatches = data?.cards.unreconciledBatches ?? 0;
+
+  const totalOnChainInBillion = totalOnChainValueVnd / 1_000_000_000;
+
+  const allocationRows = useMemo(
+    () =>
+      (data?.allocation ?? []).map((row) => ({
+        color: categoryColorMap[row.categoryType],
+        count: row.count,
+        kind: row.categoryName,
+        share: row.sharePercent,
+        type: row.categoryType,
+        valueInMillions: row.valueVnd / 1_000_000,
+      })),
+    [data?.allocation],
+  );
+
+  const txSubClassName =
+    txDelta == null
+      ? undefined
+      : txDelta >= 0
+        ? "font-medium text-success"
+        : "font-medium text-danger";
 
   return (
     <section className="mx-auto">
@@ -45,25 +104,25 @@ export const OverviewPage = () => {
         <StatCard
           label="Tài sản đang niêm yết"
           subClassName="font-medium text-success"
-          subValue="+2 trong 7 ngày"
-          value="14"
+          subValue={`+${numberFormatter.format(listedAssetsDelta)} trong 7 ngày`}
+          value={numberFormatter.format(listedAssetsValue)}
         />
         <StatCard
           label="Tổng giá trị on-chain"
           subValue="VND · Quy đổi theo giá Oracle"
-          value="412,8 tỷ"
+          value={`${decimalFormatter.format(totalOnChainInBillion)} tỷ`}
         />
         <StatCard
           label="Giao dịch hôm nay"
-          subClassName="font-medium text-success"
-          subValue="+18% so với hôm qua"
-          value="149"
+          subClassName={txSubClassName}
+          subValue={toSignedPercentText(txDelta)}
+          value={numberFormatter.format(txTodayValue)}
         />
         <StatCard
           label="Batch chưa đối soát"
           subClassName="font-medium text-danger"
           subValue=""
-          value="3"
+          value={numberFormatter.format(unreconciledBatches)}
           variant="warning"
         />
       </div>
@@ -90,10 +149,10 @@ export const OverviewPage = () => {
                       {row.count} tài sản
                     </span>
                     <span className="text-right font-mono text-sm font-semibold text-text sm:min-w-20">
-                      {row.value} tr
+                      {millionFormatter.format(row.valueInMillions)} tr
                     </span>
                     <span className="col-span-2 text-right text-sm font-semibold text-text sm:col-span-1 sm:min-w-[50px]">
-                      {row.share}%
+                      {decimalFormatter.format(row.share)}%
                     </span>
                   </div>
                 </div>
@@ -103,7 +162,7 @@ export const OverviewPage = () => {
                     className="h-full rounded-sm"
                     style={{
                       backgroundColor: row.color,
-                      width: `${row.share}%`,
+                      width: `${Math.min(Math.max(row.share, 0), 100)}%`,
                     }}
                   />
                 </div>
