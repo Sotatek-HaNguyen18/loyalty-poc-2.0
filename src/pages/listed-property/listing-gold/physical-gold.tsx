@@ -56,13 +56,6 @@ export const PhysicalGoldStep = ({
           name="totalWeight"
           rightAddon="gram"
         />
-        <TextField
-          control={control}
-          helper="Tự sinh — chỉ đọc"
-          label="Mã đợt niêm yết"
-          isRequired={true}
-          name="listingId"
-        />
         <SelectField
           control={control}
           label="Độ tinh khiết"

@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Button } from "antd";
-import { ChevronLeft, X } from "lucide-react";
+import { ChevronLeft, Wand2, X } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { paths } from "@/routes/paths";
@@ -66,10 +66,21 @@ const progressText = (step: number) =>
 
 const ListingCarbonPageBase = () => {
   const navigate = useNavigate();
+  const { basicInformation, fillDemoData, reset } = useCreateCarbonStore();
   const [currentStep, setCurrentStep] = useState(0);
+  const [formSessionKey, setFormSessionKey] = useState(() => {
+    reset();
+    return 0;
+  });
   const [showSign, setShowSign] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
-  const { basicInformation, reset } = useCreateCarbonStore();
+
+  const handleAutoFill = () => {
+    reset();
+    fillDemoData();
+    setCurrentStep(0);
+    setFormSessionKey((k) => k + 1);
+  };
 
   const activeStep = steps[currentStep];
   const ActiveStepComponent = stepComponentMap[activeStep.key];
@@ -103,6 +114,13 @@ const ListingCarbonPageBase = () => {
         </div>
 
         <div className="flex items-center gap-3 self-start xl:self-auto">
+          <Button
+            className="!h-11 !rounded-xl !border-app-border !px-4 !text-base !font-semibold !text-bidv-gold"
+            icon={<Wand2 className="h-4 w-4" />}
+            onClick={handleAutoFill}
+          >
+            Auto Fill
+          </Button>
           <Button className="!h-11 !rounded-xl !border-0 !bg-transparent !px-2 !text-base !font-semibold !text-text-2">
             Lưu nháp
           </Button>
@@ -174,6 +192,7 @@ const ListingCarbonPageBase = () => {
 
         <main>
           <ActiveStepComponent
+            key={formSessionKey}
             isFirstStep={currentStep === 0}
             isLastStep={currentStep === steps.length - 1}
             onBack={() => setCurrentStep((step) => Math.max(step - 1, 0))}

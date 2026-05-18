@@ -19,6 +19,7 @@ import { paths } from "@/routes/paths";
 import dayjs from "dayjs";
 import { compactHash } from "@/utils/format";
 import { computeListedMetrics } from "./utils";
+import { listedAssetsQueryKeys } from "./utils/queryKeys";
 
 type SearchForm = {
   search: string;
@@ -134,7 +135,7 @@ export const ListedPropertyPage = () => {
         limit: PAGE_SIZE,
       }),
     queryKey: [
-      "listed-assets",
+      ...listedAssetsQueryKeys.all,
       categoryFilter,
       statusFilter,
       searchValue.trim(),
@@ -145,7 +146,7 @@ export const ListedPropertyPage = () => {
 
   const { data: statsResponse } = useQuery({
     queryFn: () => getAssets({ page: 1, limit: STATS_PAGE_SIZE }),
-    queryKey: ["listed-assets-stats"],
+    queryKey: listedAssetsQueryKeys.stats,
     staleTime: 60_000,
   });
 

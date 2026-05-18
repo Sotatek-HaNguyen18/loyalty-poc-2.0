@@ -33,7 +33,7 @@ export const BasicInformationStep = ({
       onSubmit={handleSubmit(onSubmit)}
     >
       <StepHeader
-        description="Điền các thông tin cơ bản về đợt niêm yết. Các thông tin này sẽ hiển thị trực tiếp cho nhà đầu tư trên ứng dụng di động."
+        description="Mã đợt được sinh tự động theo định dạng GOLD-YYYYMMDD-XXX. Tên hiển thị sẽ xuất hiện trên Catalog của nhà đầu tư."
         stepLabel="Bước 1 / 4"
         title="Thông tin cơ bản"
       />

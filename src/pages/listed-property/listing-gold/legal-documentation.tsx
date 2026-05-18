@@ -1,9 +1,11 @@
+import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { createAsset } from "@/services";
 import { useCreateListedGoldStore } from "../../../stores/useCreateListedGoldStore";
 import { message } from "antd";
 import { FileField, StepFooter, StepHeader } from "../components/shared";
 import { getCreateAssetErrorMessage } from "../utils";
+import { invalidateListedAssetsQueries } from "../utils/queryKeys";
 import type { CreateStepPageProps, LegalDocumentationData } from "./types";
 import { CATEGORY_TYPE } from "@/services/assets/constants";
 
@@ -21,6 +23,7 @@ export const LegalDocumentationStep = ({
     basicInformation,
     tokenization,
   } = useCreateListedGoldStore();
+  const queryClient = useQueryClient();
   const { control, handleSubmit } = useForm<LegalDocumentationData>({
     defaultValues: legalDocumentation,
   });
@@ -59,6 +62,7 @@ export const LegalDocumentationStep = ({
         status: "active",
       });
 
+      await invalidateListedAssetsQueries(queryClient);
       onNext();
     } catch (error) {
       message.error(getCreateAssetErrorMessage(error));

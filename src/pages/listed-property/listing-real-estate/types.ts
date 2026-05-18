@@ -73,5 +73,6 @@ export interface CreateRealEstateStore {
   setRealEstate: (data: Partial<RealEstateData>) => void;
   setTokenization: (data: Partial<TokenizationData>) => void;
   setLegalDocumentation: (data: Partial<LegalDocumentationData>) => void;
+  fillDemoData: () => void;
   reset: () => void;
 }

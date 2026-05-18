@@ -63,5 +63,6 @@ export interface CreateCarbonStore {
   setCarbonProject: (data: Partial<CarbonProjectData>) => void;
   setTokenization: (data: Partial<TokenizationData>) => void;
   setLegalDocumentation: (data: Partial<LegalDocumentationData>) => void;
+  fillDemoData: () => void;
   reset: () => void;
 }

@@ -52,5 +52,6 @@ export interface CreateListedGoldStore {
   setPhysicalGold: (data: PhysicalGoldData) => void;
   setTokenization: (data: TokenizationData) => void;
   setLegalDocumentation: (data: LegalDocumentationData) => void;
+  fillDemoData: () => void;
   reset: () => void;
 }

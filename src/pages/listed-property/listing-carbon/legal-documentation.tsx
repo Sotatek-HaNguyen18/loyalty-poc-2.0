@@ -1,10 +1,12 @@
 import { CATEGORY_TYPE } from "@/services/assets/constants";
 import { createAsset } from "@/services";
 import { useCreateCarbonStore } from "@/stores/useCreateCarbonStore";
+import { useQueryClient } from "@tanstack/react-query";
 import { message } from "antd";
 import { useForm } from "react-hook-form";
 import { FileField, StepFooter, StepHeader } from "../components/shared";
 import { getCreateAssetErrorMessage } from "../utils";
+import { invalidateListedAssetsQueries } from "../utils/queryKeys";
 import type { CreateStepPageProps, LegalDocumentationData } from "./types";
 
 export const LegalDocumentationStep = ({
@@ -21,6 +23,7 @@ export const LegalDocumentationStep = ({
     carbonProject,
     tokenization,
   } = useCreateCarbonStore();
+  const queryClient = useQueryClient();
   const { control, handleSubmit } = useForm<LegalDocumentationData>({
     defaultValues: legalDocumentation,
   });
@@ -63,6 +66,7 @@ export const LegalDocumentationStep = ({
         status: "active",
       });
 
+      await invalidateListedAssetsQueries(queryClient);
       onNext();
     } catch (error) {
       message.error(getCreateAssetErrorMessage(error));
