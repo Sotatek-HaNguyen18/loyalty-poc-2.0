@@ -1,6 +1,6 @@
 export type CategoryType = "gold" | "real_estate" | "carbon";
 
-export type AssetStatus = "active" | "inactive" | "coming_soon";
+export type AssetStatus = "active" | "coming_soon";
 
 export type AssetCategory = {
   id: string;

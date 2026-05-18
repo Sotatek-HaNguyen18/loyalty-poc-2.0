@@ -1,8 +1,10 @@
 import { CATEGORY_TYPE } from "@/services/assets/constants";
 import { createAsset } from "@/services";
 import { useCreateCarbonStore } from "@/stores/useCreateCarbonStore";
+import { message } from "antd";
 import { useForm } from "react-hook-form";
 import { FileField, StepFooter, StepHeader } from "../components/shared";
+import { getCreateAssetErrorMessage } from "../utils";
 import type { CreateStepPageProps, LegalDocumentationData } from "./types";
 
 export const LegalDocumentationStep = ({
@@ -63,7 +65,7 @@ export const LegalDocumentationStep = ({
 
       onNext();
     } catch (error) {
-      console.error("Failed to submit gold listing:", error);
+      message.error(getCreateAssetErrorMessage(error));
     }
   };
 

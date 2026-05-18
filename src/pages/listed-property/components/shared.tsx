@@ -13,6 +13,18 @@ import { Controller, type Control } from "react-hook-form";
 const { TextArea } = Input;
 const { Dragger } = Upload;
 
+const DEFAULT_REQUIRED_MESSAGE = "Trường này là bắt buộc";
+
+const renderFieldHintOrError = (
+  error: { message?: string } | undefined,
+  helper?: string,
+) =>
+  error?.message ? (
+    <p className="mt-2 text-sm text-danger">{error.message}</p>
+  ) : helper ? (
+    <p className="mt-2 text-sm text-text-3">{helper}</p>
+  ) : null;
+
 type StepHeaderProps = {
   description: string;
   stepLabel: string;
@@ -26,6 +38,7 @@ type FormFieldProps = {
   label: string;
   isRequired?: boolean;
   placeholder?: string;
+  requiredMessage?: string;
 };
 
 type StepFooterProps = {
@@ -80,6 +93,7 @@ export const TextField = ({
   label,
   isRequired,
   placeholder,
+  requiredMessage,
   rightAddon,
 }: FormFieldProps & { rightAddon?: string }) => {
   return (
@@ -88,7 +102,11 @@ export const TextField = ({
       <Controller
         control={control}
         name={name}
-        rules={{ required: isRequired }}
+        rules={{
+          required: isRequired
+            ? (requiredMessage ?? DEFAULT_REQUIRED_MESSAGE)
+            : false,
+        }}
         render={({ field, fieldState: { error } }) => (
           <>
             <Input
@@ -98,9 +116,7 @@ export const TextField = ({
               placeholder={placeholder}
               status={error ? "error" : ""}
             />
-            {helper ? (
-              <p className="mt-2 text-sm text-text-3">{helper}</p>
-            ) : null}
+            {renderFieldHintOrError(error, helper)}
           </>
         )}
       />
@@ -116,6 +132,7 @@ export const SelectField = ({
   isRequired,
   options = [],
   placeholder,
+  requiredMessage,
 }: FormFieldProps & {
   options?: { label: string; value: string | number }[] | string[];
 }) => {
@@ -129,7 +146,11 @@ export const SelectField = ({
       <Controller
         control={control}
         name={name}
-        rules={{ required: isRequired }}
+        rules={{
+          required: isRequired
+            ? (requiredMessage ?? DEFAULT_REQUIRED_MESSAGE)
+            : false,
+        }}
         render={({ field, fieldState: { error } }) => (
           <>
             <Select
@@ -139,9 +160,7 @@ export const SelectField = ({
               placeholder={placeholder}
               status={error ? "error" : ""}
             />
-            {helper ? (
-              <p className="mt-2 text-sm text-text-3">{helper}</p>
-            ) : null}
+            {renderFieldHintOrError(error, helper)}
           </>
         )}
       />
@@ -157,6 +176,7 @@ export const TextAreaField = ({
   isRequired,
   rows = 5,
   placeholder,
+  requiredMessage,
 }: FormFieldProps & { rows?: number }) => {
   return (
     <div>
@@ -164,7 +184,11 @@ export const TextAreaField = ({
       <Controller
         control={control}
         name={name}
-        rules={{ required: isRequired }}
+        rules={{
+          required: isRequired
+            ? (requiredMessage ?? DEFAULT_REQUIRED_MESSAGE)
+            : false,
+        }}
         render={({ field, fieldState: { error } }) => (
           <>
             <TextArea
@@ -174,9 +198,7 @@ export const TextAreaField = ({
               rows={rows}
               status={error ? "error" : ""}
             />
-            {helper ? (
-              <p className="mt-2 text-sm text-text-3">{helper}</p>
-            ) : null}
+            {renderFieldHintOrError(error, helper)}
           </>
         )}
       />
@@ -191,6 +213,7 @@ export const DateField = ({
   label,
   isRequired,
   placeholder,
+  requiredMessage,
 }: FormFieldProps) => {
   return (
     <div>
@@ -198,7 +221,11 @@ export const DateField = ({
       <Controller
         control={control}
         name={name}
-        rules={{ required: isRequired }}
+        rules={{
+          required: isRequired
+            ? (requiredMessage ?? DEFAULT_REQUIRED_MESSAGE)
+            : false,
+        }}
         render={({
           field: { value, onChange, ...field },
           fieldState: { error },
@@ -215,9 +242,7 @@ export const DateField = ({
               status={error ? "error" : ""}
               value={value ? dayjs(value, "DD/MM/YYYY") : null}
             />
-            {helper ? (
-              <p className="mt-2 text-sm text-text-3">{helper}</p>
-            ) : null}
+            {renderFieldHintOrError(error, helper)}
           </>
         )}
       />
@@ -241,9 +266,7 @@ export const FileCard = ({
           PDF
         </div>
         <div>
-          <div className="text-base font-semibold text-text">
-            {filename}
-          </div>
+          <div className="text-base font-semibold text-text">{filename}</div>
           <div className="text-xs text-text-3">{meta}</div>
         </div>
       </div>
@@ -267,6 +290,7 @@ export const FileField = ({
   label,
   isRequired,
   maxSizeMB = 10,
+  requiredMessage,
 }: FormFieldProps & { maxSizeMB?: number }) => {
   return (
     <div>
@@ -274,7 +298,11 @@ export const FileField = ({
       <Controller
         control={control}
         name={name}
-        rules={{ required: isRequired }}
+        rules={{
+          required: isRequired
+            ? (requiredMessage ?? DEFAULT_REQUIRED_MESSAGE)
+            : false,
+        }}
         render={({ field: { value, onChange }, fieldState: { error } }) => {
           const file = value as any;
 
@@ -313,12 +341,7 @@ export const FileField = ({
                   meta={meta}
                   onRemove={() => onChange(undefined)}
                 />
-                {error && (
-                  <p className="text-sm text-danger">{error.message}</p>
-                )}
-                {helper && (
-                  <p className="mt-2 text-base text-text-3">{helper}</p>
-                )}
+                {renderFieldHintOrError(error, helper)}
               </div>
             );
           }
@@ -348,9 +371,7 @@ export const FileField = ({
                   </div>
                 </div>
               </Dragger>
-              {helper && (
-                <p className="mt-2 text-base text-text-3">{helper}</p>
-              )}
+              {renderFieldHintOrError(error, helper)}
             </>
           );
         }}

@@ -1,4 +1,30 @@
 import type { Asset, CategoryType } from "@/types/assets";
+import { isAxiosError } from "axios";
+
+const CREATE_ASSET_ERROR_FALLBACK = "Tạo niêm yết thất bại, vui lòng thử lại";
+
+const normalizeApiMessage = (value: unknown): string | null => {
+  if (value == null) return null;
+  if (Array.isArray(value)) {
+    const joined = value.filter(Boolean).map(String).join(", ");
+    return joined.trim() || null;
+  }
+  if (typeof value === "string" && value.trim()) return value.trim();
+  return null;
+};
+
+export function getCreateAssetErrorMessage(error: unknown): string {
+  if (isAxiosError(error)) {
+    const data = error.response?.data as { message?: unknown } | undefined;
+    const fromBody = normalizeApiMessage(data?.message);
+    if (fromBody) return fromBody;
+    const fromAxios = normalizeApiMessage(error.message);
+    if (fromAxios) return fromAxios;
+  } else if (error instanceof Error && error.message.trim()) {
+    return error.message;
+  }
+  return CREATE_ASSET_ERROR_FALLBACK;
+}
 
 export type ListedMetricCard = {
   label: string;
@@ -28,8 +54,8 @@ const filterByCategory = (assets: Asset[], category: CategoryType) =>
 
 export function computeListedMetrics(assets: Asset[]): ListedMetricCard[] {
   const activeCount = assets.filter((a) => a.status === "active").length;
-  const inactiveCount = assets.filter((a) => a.status === "inactive").length;
-  const draftCount = assets.filter((a) => a.status === "coming_soon").length;
+  const pendingCount = assets.filter((a) => a.status === "coming_soon").length;
+  const totalCount = assets.length;
 
   const goldAssets = filterByCategory(assets, "gold");
   const realEstateAssets = filterByCategory(assets, "real_estate");
@@ -43,8 +69,8 @@ export function computeListedMetrics(assets: Asset[]): ListedMetricCard[] {
   return [
     {
       label: "Tổng niêm yết",
-      value: String(assets.length),
-      subValue: `${activeCount} active · ${inactiveCount} paused · ${draftCount} draft`,
+      value: String(totalCount),
+      subValue: `${activeCount} active · ${pendingCount} pending`,
     },
     {
       label: "Vàng (BGT)",
