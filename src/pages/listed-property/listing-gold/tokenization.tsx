@@ -47,7 +47,7 @@ export const TokenizationStep = ({
 
   return (
     <form
-      className="rounded-[28px] border border-app-border bg-white p-8 shadow-[0_18px_55px_rgba(8,31,20,0.05)] xl:p-10"
+      className="rounded-[28px] border border-app-border bg-card p-8 shadow-card xl:p-10"
       onSubmit={handleSubmit(onSubmit)}
     >
       <StepHeader
@@ -76,17 +76,17 @@ export const TokenizationStep = ({
         />
       </div>
 
-      <div className="mt-8 rounded-2xl bg-[#edf5f1] px-5 py-5">
+      <div className="mt-8 rounded-2xl bg-primary-50 px-5 py-5">
         <div className="flex items-start gap-4">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-bidv-green text-white">
             <CircleDollarSign className="h-4 w-4" />
           </div>
           <div>
-            <div className="text-base font-semibold text-[#0a3d2f]">
+            <div className="text-base font-semibold text-bidv-green">
               Tổng số token sẽ được mint: {numberFormatter.format(issuedTokens)}{" "}
               BGT
             </div>
-            <div className="mt-2 text-sm text-[#53635c]">
+            <div className="mt-2 text-sm text-text-2">
               {numberFormatter.format(totalWeight)}g × (1 chỉ / 3,75g) ÷{" "}
               {ratioText} = {numberFormatter.format(issuedTokens)} BGT
             </div>
