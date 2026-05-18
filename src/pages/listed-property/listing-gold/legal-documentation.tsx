@@ -65,7 +65,7 @@ export const LegalDocumentationStep = ({
 
   return (
     <form
-      className="rounded-[28px] border border-app-border bg-white p-8 shadow-[0_18px_55px_rgba(8,31,20,0.05)] xl:p-10"
+      className="rounded-[28px] border border-app-border bg-card p-8 shadow-card xl:p-10"
       onSubmit={handleSubmit(onSubmit)}
     >
       <StepHeader
@@ -104,7 +104,7 @@ export const LegalDocumentationStep = ({
           name="otherDocuments"
         />
 
-        <div className="rounded-2xl bg-[#e9f0ff] px-4 py-4 text-base leading-7 text-[#3459b8]">
+        <div className="rounded-2xl bg-info-bg px-4 py-4 text-base leading-7 text-info">
           <span className="font-semibold">Lưu ý:</span> Hash SHA-256 của mỗi tài
           liệu sẽ được ghi nhận trên smart contract
           <span className="font-mono"> VaultRegistry </span>

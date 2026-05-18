@@ -40,7 +40,7 @@ export const CarbonProjectStep = ({
 
   return (
     <form
-      className="rounded-[28px] border border-app-border bg-white p-8 shadow-[0_18px_55px_rgba(8,31,20,0.05)] xl:p-10"
+      className="rounded-[28px] border border-app-border bg-card p-8 shadow-card xl:p-10"
       onSubmit={handleSubmit(onSubmit)}
     >
       <StepHeader
@@ -176,7 +176,7 @@ export const CarbonProjectStep = ({
           <SectionHeading>ĐÓNG GÓP LỢI ÍCH (CO-BENEFITS)</SectionHeading>
           <div className="mt-6 space-y-6">
             <div>
-              <div className="mb-2 text-sm font-semibold text-[#16211d]">
+              <div className="mb-2 text-sm font-semibold text-text">
                 SDG được đóng góp
               </div>
               <Controller
@@ -210,8 +210,8 @@ export const CarbonProjectStep = ({
                             className={cn(
                               "flex items-center gap-2 rounded-full border px-4 py-2 text-sm font-medium transition-colors",
                               isSelected
-                                ? "border-bidv-green text-bidv-green bg-[#edf5f1]"
-                                : "border-app-border text-[#53635c] hover:bg-[#f7f9f8]",
+                                ? "border-bidv-green text-bidv-green bg-primary-50"
+                                : "border-app-border text-text-2 hover:bg-bg-alt",
                             )}
                           >
                             {isSelected && <Check className="h-4 w-4" />}
@@ -223,13 +223,13 @@ export const CarbonProjectStep = ({
                   );
                 }}
               />
-              <p className="mt-2 text-base text-[#8a9993]">
+              <p className="mt-2 text-base text-text-3">
                 Chọn các SDG có bằng chứng đo lường được
               </p>
             </div>
 
             <div>
-              <div className="mb-2 text-sm font-semibold text-[#16211d]">
+              <div className="mb-2 text-sm font-semibold text-text">
                 Đã pass additionality test
               </div>
               <Controller
@@ -245,7 +245,7 @@ export const CarbonProjectStep = ({
                   </Checkbox>
                 )}
               />
-              <p className="mt-2 text-base text-[#8a9993]">
+              <p className="mt-2 text-base text-text-3">
                 Chứng minh dự án sẽ không xảy ra nếu không có tài chính carbon
               </p>
             </div>

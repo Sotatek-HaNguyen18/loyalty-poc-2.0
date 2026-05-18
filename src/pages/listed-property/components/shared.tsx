@@ -47,17 +47,17 @@ export const StepHeader = ({
       <div className="text-sm font-extrabold uppercase tracking-[0.18em] text-bidv-gold">
         {stepLabel}
       </div>
-      <h2 className="mt-2 text-xl font-bold leading-tight text-[#07130f]">
+      <h2 className="mt-2 text-xl font-bold leading-tight text-text">
         {title}
       </h2>
-      <p className="mt-3 max-w-2xl text-sm text-[#70827a]">{description}</p>
+      <p className="mt-3 max-w-2xl text-sm text-muted-text">{description}</p>
       <div className="mt-8 border-b border-app-border" />
     </>
   );
 };
 
 export const SectionHeading = ({ children }: { children: ReactNode }) => (
-  <div className="text-sm font-semibold text-[#7b8580]">{children}</div>
+  <div className="text-sm font-semibold text-text-3">{children}</div>
 );
 
 export const FieldLabel = ({
@@ -67,9 +67,9 @@ export const FieldLabel = ({
   label: string;
   isRequired?: boolean;
 }) => (
-  <label className="mb-3 block text-sm font-semibold text-[#4a5550]">
+  <label className="mb-3 block text-sm font-semibold text-text-2">
     {label}
-    {isRequired && <span className="ml-1 text-red-500">*</span>}
+    {isRequired && <span className="ml-1 text-danger">*</span>}
   </label>
 );
 
@@ -99,7 +99,7 @@ export const TextField = ({
               status={error ? "error" : ""}
             />
             {helper ? (
-              <p className="mt-2 text-sm text-[#8a9993]">{helper}</p>
+              <p className="mt-2 text-sm text-text-3">{helper}</p>
             ) : null}
           </>
         )}
@@ -140,7 +140,7 @@ export const SelectField = ({
               status={error ? "error" : ""}
             />
             {helper ? (
-              <p className="mt-2 text-sm text-[#8a9993]">{helper}</p>
+              <p className="mt-2 text-sm text-text-3">{helper}</p>
             ) : null}
           </>
         )}
@@ -175,7 +175,7 @@ export const TextAreaField = ({
               status={error ? "error" : ""}
             />
             {helper ? (
-              <p className="mt-2 text-sm text-[#8a9993]">{helper}</p>
+              <p className="mt-2 text-sm text-text-3">{helper}</p>
             ) : null}
           </>
         )}
@@ -216,7 +216,7 @@ export const DateField = ({
               value={value ? dayjs(value, "DD/MM/YYYY") : null}
             />
             {helper ? (
-              <p className="mt-2 text-sm text-[#8a9993]">{helper}</p>
+              <p className="mt-2 text-sm text-text-3">{helper}</p>
             ) : null}
           </>
         )}
@@ -235,21 +235,21 @@ export const FileCard = ({
   onRemove?: () => void;
 }) => {
   return (
-    <div className="flex items-center rounded-sm justify-between border border-app-border bg-white px-4 py-3">
+    <div className="flex items-center rounded-sm justify-between border border-app-border bg-card px-4 py-3">
       <div className="flex items-center gap-3">
-        <div className="flex h-8 w-8 items-center justify-center bg-[#fce9e7] text-xs font-bold text-[#e05243]">
+        <div className="flex h-8 w-8 items-center justify-center bg-pdf-accent-bg text-xs font-bold text-pdf-accent">
           PDF
         </div>
         <div>
-          <div className="text-base font-semibold text-[#16211d]">
+          <div className="text-base font-semibold text-text">
             {filename}
           </div>
-          <div className="text-xs text-[#82928b]">{meta}</div>
+          <div className="text-xs text-text-3">{meta}</div>
         </div>
       </div>
       {onRemove && (
         <button
-          className="p-2 text-[#53635c] hover:bg-gray-100"
+          className="p-2 text-text-2 hover:bg-bg-alt"
           onClick={onRemove}
           type="button"
         >
@@ -314,10 +314,10 @@ export const FileField = ({
                   onRemove={() => onChange(undefined)}
                 />
                 {error && (
-                  <p className="text-sm text-red-500">{error.message}</p>
+                  <p className="text-sm text-danger">{error.message}</p>
                 )}
                 {helper && (
-                  <p className="mt-2 text-base text-[#8a9993]">{helper}</p>
+                  <p className="mt-2 text-base text-text-3">{helper}</p>
                 )}
               </div>
             );
@@ -329,7 +329,7 @@ export const FileField = ({
                 accept=".pdf"
                 beforeUpload={beforeUpload}
                 className={cn(
-                  error ? "[&_.ant-upload-drag]:border-red-500!" : "",
+                  error ? "[&_.ant-upload-drag]:border-danger!" : "",
                 )}
                 customRequest={({ onSuccess }) =>
                   setTimeout(() => onSuccess?.("ok"), 0)
@@ -338,18 +338,18 @@ export const FileField = ({
                 onChange={handleUpload}
                 showUploadList={false}
               >
-                <div className={error ? "border-red-500" : ""}>
-                  <UploadIcon className="mx-auto h-6 w-6 text-[#8a9993]" />
-                  <div className="mt-4 text-xl font-semibold text-[#16211d]">
+                <div className={error ? "border-danger" : ""}>
+                  <UploadIcon className="mx-auto h-6 w-6 text-text-3" />
+                  <div className="mt-4 text-xl font-semibold text-text">
                     Kéo thả tệp vào đây hoặc bấm để chọn
                   </div>
-                  <div className="mt-1 text-base text-[#8a9993]">
+                  <div className="mt-1 text-base text-text-3">
                     PDF · Tối đa {maxSizeMB}MB
                   </div>
                 </div>
               </Dragger>
               {helper && (
-                <p className="mt-2 text-base text-[#8a9993]">{helper}</p>
+                <p className="mt-2 text-base text-text-3">{helper}</p>
               )}
             </>
           );
@@ -371,7 +371,7 @@ export const StepFooter = ({
     <div className="mt-10 flex flex-col gap-4 border-t border-app-border pt-8 sm:flex-row sm:items-center sm:justify-between">
       <Button
         className={cn(
-          "!h-12 !rounded-none !border-0 !bg-transparent !px-0 !text-base !font-semibold !text-[#81938c]",
+          "!h-12 !rounded-none !border-0 !bg-transparent !px-0 !text-base !font-semibold !text-text-3",
           isFirstStep && "!pointer-events-none !opacity-50",
         )}
         icon={<ChevronLeft className="h-4 w-4" />}
@@ -381,7 +381,7 @@ export const StepFooter = ({
       </Button>
       <div className="flex items-center justify-end gap-3">
         <Button
-          className="!h-11 !border-0 !bg-transparent !px-4 !text-base !font-semibold !text-[#53635c]"
+          className="!h-11 !border-0 !bg-transparent !px-4 !text-base !font-semibold !text-text-2"
           onClick={onSaveDraft}
         >
           Lưu nháp

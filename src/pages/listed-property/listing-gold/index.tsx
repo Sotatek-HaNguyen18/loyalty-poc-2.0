@@ -1,7 +1,7 @@
 import { cn } from "@/lib/utils";
 import { Button } from "antd";
-import { ChevronLeft, FileBadge2, X } from "lucide-react";
-import { useMemo, useState } from "react";
+import { ChevronLeft, X } from "lucide-react";
+import { useState } from "react";
 import { BasicInformationStep } from "./basic-information";
 import { LegalDocumentationStep } from "./legal-documentation";
 import { PhysicalGoldStep } from "./physical-gold";
@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { paths } from "@/routes/paths";
 import { SuccessModal } from "../components/SuccessModal";
 import { SignTransactionModal } from "../components/SignTransactionModal";
+import { WalletInfoCard } from "../components/WalletInfoCard";
 import { useCreateListedGoldStore } from "@/stores/useCreateListedGoldStore";
 import { withWalletLoginChecking } from "@/components/shared/hoc/wallet-login-checking";
 
@@ -73,22 +74,13 @@ const ListingGoldPageBase = () => {
   const activeStep = steps[currentStep];
   const ActiveStepComponent = stepComponentMap[activeStep.key];
 
-  const walletInfo = useMemo(
-    () => ({
-      address: "0xA82C9b57Fe2a510C8f4b09a1d72ee547c8a47e91",
-      balance: "24,8 MATIC",
-      label: "Ví Admin đã kết nối",
-    }),
-    [],
-  );
-
   return (
     <div className="mx-auto max-w-[1640px]">
       <div className="mb-6 flex flex-col gap-4 xl:flex-row xl:items-center xl:justify-between">
         <div>
-          <div className="flex items-center gap-3 text-sm font-medium text-[#81938c]">
+          <div className="flex items-center gap-3 text-sm font-medium text-text-3">
             <button
-              className="rounded-full p-1 text-[#70827a]"
+              className="rounded-full p-1 text-muted-text"
               onClick={() => navigate(paths.listedProperty)}
               type="button"
             >
@@ -98,10 +90,10 @@ const ListingGoldPageBase = () => {
               Module E • Form vàng
             </span>
           </div>
-          <h1 className="mt-3 text-2xl font-bold leading-tight text-[#07130f]">
+          <h1 className="mt-3 text-2xl font-bold leading-tight text-text">
             Niêm yết đợt vàng mới
           </h1>
-          <p className="mt-2 text-[#70827a]">
+          <p className="mt-2 text-muted-text">
             Mã đợt: <span className="font-mono">GOLD-20260520-003</span> · Tự
             lưu nháp mỗi 30s · Smart contract:{" "}
             <span className="font-mono">
@@ -111,11 +103,11 @@ const ListingGoldPageBase = () => {
         </div>
 
         <div className="flex items-center gap-3 self-start xl:self-auto">
-          <Button className="!h-11 !rounded-xl !border-0 !bg-transparent !px-2 !text-base !font-semibold !text-[#53635c]">
+          <Button className="!h-11 !rounded-xl !border-0 !bg-transparent !px-2 !text-base !font-semibold !text-text-2">
             Lưu nháp
           </Button>
           <Button
-            className="!h-11 !rounded-xl !border-app-border !px-4 !text-base !font-semibold !text-[#16211d]"
+            className="!h-11 !rounded-xl !border-app-border !px-4 !text-base !font-semibold !text-text"
             icon={<X className="h-4 w-4" />}
           >
             Hủy
@@ -125,17 +117,17 @@ const ListingGoldPageBase = () => {
 
       <div className="grid gap-6 xl:grid-cols-[280px_minmax(0,1fr)]">
         <aside className="space-y-4">
-          <div className="rounded-[28px] border border-app-border bg-white p-5 shadow-[0_18px_55px_rgba(8,31,20,0.05)]">
-            <div className="text-xs font-extrabold uppercase tracking-[0.18em] text-[#81938c]">
+          <div className="rounded-[28px] border border-app-border bg-card p-5 shadow-card">
+            <div className="text-xs font-extrabold uppercase tracking-[0.18em] text-text-3">
               Tiến độ niêm yết
             </div>
-            <div className="mt-4 h-1.5 rounded-full bg-[#e8edeb]">
+            <div className="mt-4 h-1.5 rounded-full bg-border-soft">
               <div
                 className="h-1.5 rounded-full bg-bidv-green transition-all"
                 style={{ width: `${(currentStep / steps.length) * 100}%` }}
               />
             </div>
-            <div className="mt-4 text-xs text-[#81938c]">
+            <div className="mt-4 text-xs text-text-3">
               {progressText(currentStep)}
             </div>
 
@@ -148,7 +140,7 @@ const ListingGoldPageBase = () => {
                   <button
                     className={cn(
                       "flex w-full items-start gap-3 rounded-2xl px-3 py-3 text-left transition-colors",
-                      isActive ? "bg-[#edf5f1]" : "hover:bg-[#f7f9f8]",
+                      isActive ? "bg-primary-50" : "hover:bg-bg-alt",
                     )}
                     key={step.key}
                     type="button"
@@ -158,16 +150,16 @@ const ListingGoldPageBase = () => {
                         "mt-0.5 flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-bold",
                         isActive || isCompleted
                           ? "border-bidv-green bg-bidv-green text-white"
-                          : "border-[#ccd6d1] bg-white text-[#53635c]",
+                          : "border-border-strong bg-card text-text-2",
                       )}
                     >
                       {step.shortLabel}
                     </span>
                     <span>
-                      <span className="block text-base text-[#16211d]">
+                      <span className="block text-base text-text">
                         {step.title}
                       </span>
-                      <span className="mt-1 block text-sm leading-6 text-[#81938c]">
+                      <span className="mt-1 block text-sm leading-6 text-text-3">
                         {step.description}
                       </span>
                     </span>
@@ -177,21 +169,7 @@ const ListingGoldPageBase = () => {
             </div>
           </div>
 
-          <div className="rounded-[24px] bg-[#edf5f1] px-4 py-4">
-            <div className="flex items-center gap-2 text-sm font-semibold text-[#16211d]">
-              <FileBadge2 className="h-5 w-5 text-bidv-green" />
-              {walletInfo.label}
-            </div>
-            <div className="mt-3 break-all font-mono text-sm text-[#53635c]">
-              {walletInfo.address}
-            </div>
-            <div className="mt-2 text-sm text-[#53635c]">
-              Balance:{" "}
-              <span className="font-semibold text-[#16211d]">
-                {walletInfo.balance}
-              </span>
-            </div>
-          </div>
+          <WalletInfoCard />
         </aside>
 
         <main>

@@ -1,4 +1,4 @@
-import { useState, type ChangeEvent } from "react";
+import { useMemo, useState, type ChangeEvent } from "react";
 import { useAccount, useConnect } from "wagmi";
 import { ConnectWalletModal } from "./components/ConnectWalletModal";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
@@ -27,6 +27,7 @@ import type { AssetStatus, CategoryType } from "@/types/assets";
 import { paths } from "@/routes/paths";
 import dayjs from "dayjs";
 import { compactHash } from "@/utils/format";
+import { computeListedMetrics } from "./compute-listed-metrics";
 
 type SearchForm = {
   search: string;
@@ -49,33 +50,8 @@ const statusFilters: Array<{ label: string; value: StatusFilter }> = [
   { label: "Nháp", value: "coming_soon" },
 ];
 
-const metricCards = [
-  {
-    label: "Tổng niêm yết",
-    subValue: "5 active · 1 paused · 1 draft",
-    value: "6",
-  },
-  {
-    label: "Vàng (BGT)",
-    subValue: "Tổng: 17.500g · 466,66 chỉ",
-    value: "3",
-    unit: "lô",
-  },
-  {
-    label: "BĐS (BRT)",
-    subValue: "Tổng giá trị: 370 tỷ VND",
-    value: "2",
-    unit: "dự án",
-  },
-  {
-    label: "Carbon (BCT)",
-    subValue: "50.000 tCO₂e · Vintage 2025",
-    value: "1",
-    unit: "đợt",
-  },
-];
-
 const PAGE_SIZE = 10;
+const STATS_PAGE_SIZE = 100;
 
 const numberFormatter = new Intl.NumberFormat("vi-VN");
 const decimalFormatter = new Intl.NumberFormat("vi-VN", {
@@ -94,7 +70,7 @@ const backingUnitByCategory: Record<
 const formatPrice = (price: string | number, unit?: string | null) => {
   const numericPrice = Number(price);
   if (Number.isNaN(numericPrice)) return "—";
-  return `${numberFormatter.format(numericPrice)} ${unit ?? "đ"}`;
+  return `${numberFormatter.format(numericPrice)} ${unit ?? ""}`;
 };
 
 const formatBackingValue = (value: unknown) => {
@@ -179,6 +155,12 @@ export const ListedPropertyPage = () => {
     placeholderData: keepPreviousData,
   });
 
+  const { data: statsResponse } = useQuery({
+    queryFn: () => getAssets({ page: 1, limit: STATS_PAGE_SIZE }),
+    queryKey: ["listed-assets-stats"],
+    staleTime: 60_000,
+  });
+
   const handleSearchChange = (event: ChangeEvent<HTMLInputElement>) => {
     setPage(1);
     setSearchValue(event.target.value);
@@ -186,6 +168,10 @@ export const ListedPropertyPage = () => {
   };
 
   const assets = assetsResponse?.items ?? [];
+  const metricCards = useMemo(
+    () => computeListedMetrics(statsResponse?.items ?? []),
+    [statsResponse?.items],
+  );
 
   const paginationMeta = assetsResponse?.meta;
   const totalResults = paginationMeta?.total ?? 0;
@@ -470,7 +456,7 @@ export const ListedPropertyPage = () => {
                       {asset.txHash ? (
                         <a
                           className="font-mono text-xs text-bidv-green underline decoration-dotted"
-                          href={`https://mumbai.polygonscan.com/tx/${asset.txHash}`}
+                          href={`https://polygonscan.com/tx/${asset.txHash}`}
                           rel="noreferrer"
                           target="_blank"
                         >

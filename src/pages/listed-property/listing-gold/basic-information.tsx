@@ -29,7 +29,7 @@ export const BasicInformationStep = ({
 
   return (
     <form
-      className="rounded-[28px] border border-app-border bg-white p-8 shadow-[0_18px_55px_rgba(8,31,20,0.05)] xl:p-10"
+      className="rounded-[28px] border border-app-border bg-card p-8 shadow-card xl:p-10"
       onSubmit={handleSubmit(onSubmit)}
     >
       <StepHeader

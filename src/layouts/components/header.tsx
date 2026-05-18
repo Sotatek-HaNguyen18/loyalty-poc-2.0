@@ -1,7 +1,15 @@
-import { Button } from "antd";
+import { Button, Dropdown } from "antd";
 
 import { shortenAddress } from "@/lib/wagmi";
-import { Bell, CreditCard, Menu, Search, Settings } from "lucide-react";
+import {
+  Bell,
+  ChevronDown,
+  LogOut,
+  Menu,
+  Search,
+  Settings,
+  Wallet,
+} from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 
@@ -38,7 +46,7 @@ export const Header = ({
         type="text"
       />
 
-      <div className="hidden items-center gap-2 text-[13px] text-text-3 md:flex">
+      <div className="hidden items-center gap-2 text-xsm text-text-3 md:flex">
         {breadcrumbs.map((crumb, index) => (
           <div className="contents" key={`${crumb}-${index}`}>
             {index > 0 ? <span className="text-text-disabled">/</span> : null}
@@ -55,7 +63,7 @@ export const Header = ({
         <Search className="pointer-events-none absolute left-2.5 top-1/2 h-[13px] w-[13px] -translate-y-1/2 text-text-3" />
 
         <input
-          className="h-8 w-full rounded-md border border-transparent bg-app-bg pl-8 pr-3 text-[13px] outline-none transition-colors placeholder:text-text-3 focus:bg-white focus:border-bidv-green"
+          className="h-8 w-full rounded-md border border-transparent bg-app-bg pl-8 pr-3 text-xsm outline-none transition-colors placeholder:text-text-3 focus:bg-white focus:border-bidv-green"
           placeholder="Tìm theo mã tài sản, tx hash, nhà đầu tư..."
           type="search"
         />
@@ -82,21 +90,44 @@ export const Header = ({
         <div className="hidden h-[22px] w-px bg-app-border md:block" />
 
         {isConnected && address ? (
-          <div className="flex items-center gap-2 border border-app-bg bg-app-bg p-1 rounded-full">
-            <div className="w-5 h-5 rounded-full bg-amber-700"></div>
-            <div className="h-1.5 w-1.5 rounded-full bg-bidv-green"></div>
-            <div>{shortenAddress(address)}</div>
-            <Button onClick={() => disconnect()}>Disconnect Wallet</Button>
-          </div>
+          <Dropdown
+            trigger={["click"]}
+            placement="bottomRight"
+            popupRender={() => (
+              <div className="min-w-[180px] rounded-xl border border-app-border bg-white p-1.5 shadow-lg">
+                <button
+                  className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-danger transition-colors hover:bg-bg-alt cursor-pointer"
+                  onClick={() => disconnect()}
+                  type="button"
+                >
+                  <LogOut className="h-4 w-4" />
+                  Ngắt kết nối ví
+                </button>
+              </div>
+            )}
+          >
+            <button
+              className="flex cursor-pointer items-center gap-2 rounded-full border border-app-border bg-app-bg p-[5px] pr-2.5 transition-colors hover:bg-bg-alt"
+              type="button"
+            >
+              <div className="h-5 w-5 rounded-full bg-gold-gradient" />
+              <div className="h-1.5 w-1.5 rounded-full bg-success" />
+              <div className="font-mono text-xs font-medium text-text">
+                {shortenAddress(address)}
+              </div>
+              <ChevronDown className="h-3.5 w-3.5 text-text-3" />
+            </button>
+          </Dropdown>
         ) : (
           <Button
-            className="!hidden !h-[30px] !rounded-full !px-4 !text-xs md:!inline-flex"
+            aria-label="Kết nối ví Admin"
+            className="!inline-flex !h-8 !w-8 !items-center !justify-center !rounded-full !p-0 !text-xs md:!h-[30px] md:!w-auto md:!px-4"
             type="primary"
             disabled={status === "pending"}
             onClick={() => setShowConnectModal(true)}
           >
-            <CreditCard className="h-3.5 w-3.5" />
-            Kết nối ví Admin
+            <Wallet className="h-3.5 w-3.5" />
+            <span className="hidden md:inline">Kết nối ví Admin</span>
           </Button>
         )}
 

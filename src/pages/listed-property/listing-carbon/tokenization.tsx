@@ -55,7 +55,7 @@ export const TokenizationStep = ({
 
   return (
     <form
-      className="rounded-[28px] border border-app-border bg-white p-8 shadow-[0_18px_55px_rgba(8,31,20,0.05)] xl:p-10"
+      className="rounded-[28px] border border-app-border bg-card p-8 shadow-card xl:p-10"
       onSubmit={handleSubmit(onSubmit)}
     >
       <StepHeader
@@ -84,16 +84,16 @@ export const TokenizationStep = ({
         </div>
 
         {/* Info Box */}
-        <div className="flex items-start gap-4 rounded-xl bg-[#edf5f1] p-4">
+        <div className="flex items-start gap-4 rounded-xl bg-primary-50 p-4">
           <div className="mt-1 rounded-full bg-bidv-green p-1 text-white">
             <Info className="h-4 w-4" />
           </div>
           <div>
-            <div className="text-base font-semibold text-[#16211d]">
+            <div className="text-base font-semibold text-text">
               Tổng số token sẽ được mint: {numberFormatter.format(issuedTokens)}{" "}
               BCT
             </div>
-            <div className="mt-1 text-sm text-[#53635c]">
+            <div className="mt-1 text-sm text-text-2">
               {numberFormatter.format(totalIssuedCredits)} tCO2e ÷ {ratioText} ={" "}
               {numberFormatter.format(issuedTokens)} BCT · Mỗi BCT đại diện{" "}
               {ratioText} tCO2e đã được verify bởi {vvb}
@@ -116,7 +116,7 @@ export const TokenizationStep = ({
           <SectionHeading>CƠ CHẾ RETIREMENT</SectionHeading>
           <div className="mt-6 space-y-6">
             <div>
-              <div className="mb-2 text-sm font-semibold text-[#16211d]">
+              <div className="mb-2 text-sm font-semibold text-text">
                 Cho phép retirement on-chain
               </div>
               <Controller
@@ -132,7 +132,7 @@ export const TokenizationStep = ({
                   </Checkbox>
                 )}
               />
-              <p className="mt-2 text-base text-[#8a9993]">
+              <p className="mt-2 text-base text-text-3">
                 Cho phép NĐT/doanh nghiệp burn token để ghi nhận giảm phát thải
                 vào báo cáo ESG
               </p>
