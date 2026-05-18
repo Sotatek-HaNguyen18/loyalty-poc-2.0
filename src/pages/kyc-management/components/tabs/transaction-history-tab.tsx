@@ -1,4 +1,4 @@
-import { Table, Tag } from "antd";
+import { Table } from "antd";
 import { dataSource } from "../../constants/mock-kyc-data";
 import { StatusBadge } from "@/components/shared";
 import { getStatusVariant } from "@/utils";

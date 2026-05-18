@@ -1,9 +1,12 @@
+import { useQuery } from "@tanstack/react-query";
 import { Drawer, Tabs } from "antd";
 
 import type { KYCRecord } from "../types";
+import { mapKYCRecord } from "../utils/kyc-record";
 
 import { DrawerHeader } from "./kyc-drawer-header";
 import { useResponsiveDrawer } from "@/hooks";
+import { getKYCDetail } from "@/services";
 import { ActionsTab, KYCInfoTab, PortfolioTab, TransactionHistoryTab } from "./tabs";
 
 interface KYCDetailDrawerProps {
@@ -13,14 +16,22 @@ interface KYCDetailDrawerProps {
 
 export function KYCDetailDrawer({ record, onClose }: KYCDetailDrawerProps) {
   const width = useResponsiveDrawer();
+  const idOrAddress = record?.detailId ?? record?.id;
+  const { data: detailResponse } = useQuery({
+    enabled: !!idOrAddress,
+    queryFn: () => getKYCDetail(idOrAddress!),
+    queryKey: ["kyc-detail", idOrAddress],
+  });
 
   if (!record) return null;
+
+  const detailRecord = detailResponse ? mapKYCRecord(detailResponse) : record;
 
   const items = [
     {
       key: "info",
       label: "KYC Info",
-      children: <KYCInfoTab record={record} />,
+      children: <KYCInfoTab record={detailRecord} />,
     },
     {
       key: "portfolio",
@@ -35,13 +46,13 @@ export function KYCDetailDrawer({ record, onClose }: KYCDetailDrawerProps) {
     {
       key: "actions",
       label: "Thao tác",
-      children: <ActionsTab record={record} />,
+      children: <ActionsTab key={`${detailRecord.detailId ?? detailRecord.id}-${detailRecord.level}`} record={detailRecord} />,
     },
   ];
 
   return (
     <Drawer title={null} placement="right" onClose={onClose} open={!!record} size={width} closable={false} styles={{ body: { padding: 0 } }}>
-      <DrawerHeader record={record} onClose={onClose} />
+      <DrawerHeader record={detailRecord} onClose={onClose} />
 
       <Tabs
         defaultActiveKey="info"
