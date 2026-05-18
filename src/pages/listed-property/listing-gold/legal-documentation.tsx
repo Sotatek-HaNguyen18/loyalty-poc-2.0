@@ -1,7 +1,9 @@
 import { useForm } from "react-hook-form";
 import { createAsset } from "@/services";
 import { useCreateListedGoldStore } from "../../../stores/useCreateListedGoldStore";
+import { message } from "antd";
 import { FileField, StepFooter, StepHeader } from "../components/shared";
+import { getCreateAssetErrorMessage } from "../utils";
 import type { CreateStepPageProps, LegalDocumentationData } from "./types";
 import { CATEGORY_TYPE } from "@/services/assets/constants";
 
@@ -59,7 +61,7 @@ export const LegalDocumentationStep = ({
 
       onNext();
     } catch (error) {
-      console.error("Failed to submit gold listing:", error);
+      message.error(getCreateAssetErrorMessage(error));
     }
   };
 

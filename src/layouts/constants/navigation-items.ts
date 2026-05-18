@@ -1,10 +1,4 @@
-import {
-  ArrowRightLeft,
-  Grid2X2,
-  List,
-  UserRound,
-  DollarSign,
-} from "lucide-react";
+import { ArrowRightLeft, Grid2X2, List, UserRound } from "lucide-react";
 
 export const navigationItems = [
   { badge: undefined, icon: Grid2X2, id: "overview", label: "Tổng quan" },
@@ -21,11 +15,4 @@ export const navigationItems = [
     id: "kyc",
     label: "Quản lý KYC",
   },
-  {
-    badge: "C",
-    icon: DollarSign,
-    id: "pricing",
-    label: "Cập nhật giá",
-  },
-  // { badge: "D", disabled: true, icon: Clock3, id: "limits", label: "Hạn mức" },
 ];

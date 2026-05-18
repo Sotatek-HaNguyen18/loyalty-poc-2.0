@@ -1,10 +1,10 @@
 import { Button } from "antd";
-import { Download, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { KindChip } from "@/components/shared/kind-chip";
 import { StatCard } from "@/components/shared/stat-card";
 import { paths } from "@/routes/paths";
-import { allocationRows, recentActivities } from "./constants";
+import { allocationRows } from "./constants";
 
 export const OverviewPage = () => {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ export const OverviewPage = () => {
           <h1 className="font-display text-[22px] font-bold! mb-1! tracking-[-0.01em] text-text">
             Tổng quan
           </h1>
-          <p className="mt-1 text-[13px] mb-0! text-text-3">
+          <p className="mt-1 text-xsm mb-0! text-text-3">
             BIDV RWA Admin Console · PoC v2.0 · Cập nhật{" "}
             {new Date().toLocaleString("vi-VN", {
               day: "2-digit",
@@ -30,14 +30,7 @@ export const OverviewPage = () => {
 
         <div className="flex w-full min-w-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center sm:gap-2">
           <Button
-            className="w-full text-[13px]! sm:w-auto sm:shrink-0"
-            htmlType="button"
-            icon={<Download size={14} />}
-          >
-            <span className="font-medium">Xuất báo cáo</span>
-          </Button>
-          <Button
-            className="w-full text-[13px]! sm:w-auto sm:shrink-0"
+            className="w-full text-xsm! sm:w-auto sm:shrink-0"
             htmlType="button"
             icon={<Plus size={14} />}
             onClick={() => navigate(paths.listedProperty)}
@@ -46,13 +39,6 @@ export const OverviewPage = () => {
             <span className="font-medium">Tạo niêm yết mới</span>
           </Button>
         </div>
-      </div>
-
-      <div className="mb-4 rounded-r-md border-l-[3px] border-bidv-gold bg-linear-to-r from-primary-50 to-transparent px-3.5 py-2 text-xs text-text-2">
-        <strong>PoC v2.0</strong> · Pass này tập trung vào{" "}
-        <strong>Module E (Niêm yết tài sản)</strong> và{" "}
-        <strong>Module B (Đối soát batch)</strong>. Các module khác sẽ được phát
-        triển ở pass tiếp theo.
       </div>
 
       <div className="mb-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
@@ -76,13 +62,13 @@ export const OverviewPage = () => {
         <StatCard
           label="Batch chưa đối soát"
           subClassName="font-medium text-danger"
-          subValue="1 lệch với Core"
+          subValue=""
           value="3"
           variant="warning"
         />
       </div>
 
-      <div className="grid gap-4 xl:grid-cols-[2fr_1fr]">
+      <div className="grid gap-4 xl:grid-cols-1">
         <article className="overflow-hidden rounded-lg border border-app-border bg-card">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border-soft px-4 py-4 sm:px-5">
             <h2 className="text-sm! font-semibold! text-text! mb-0!">
@@ -120,39 +106,6 @@ export const OverviewPage = () => {
                       width: `${row.share}%`,
                     }}
                   />
-                </div>
-              </div>
-            ))}
-          </div>
-        </article>
-
-        <article className="overflow-hidden rounded-lg border border-app-border bg-card">
-          <div className="border-b border-border-soft px-5 py-4">
-            <h2 className="text-sm! font-semibold! text-text! mb-0!">
-              Hoạt động gần đây
-            </h2>
-          </div>
-
-          <div className="py-2">
-            {recentActivities.map((activity, index) => (
-              <div
-                className="px-5 py-2.5"
-                key={`${activity.who}-${activity.what}-${activity.time}`}
-                style={{
-                  borderBottom:
-                    index < recentActivities.length - 1
-                      ? "1px solid var(--border-soft)"
-                      : "none",
-                }}
-              >
-                <div className="mb-0.5 text-[12.5px] text-text">
-                  <strong>{activity.who}</strong> · {activity.what}
-                </div>
-                <div className="font-mono text-[11.5px] text-text-3">
-                  {activity.target}
-                </div>
-                <div className="mt-0.5 text-[11px] text-text-disabled">
-                  {activity.time}
                 </div>
               </div>
             ))}

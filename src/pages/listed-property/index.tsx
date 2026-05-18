@@ -4,16 +4,7 @@ import { ConnectWalletModal } from "./components/ConnectWalletModal";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 import { Button, Dropdown } from "antd";
-import {
-  ChevronDown,
-  ChevronRight,
-  Download,
-  Eye,
-  Pause,
-  Play,
-  Plus,
-  RefreshCw,
-} from "lucide-react";
+import { ChevronDown, ChevronRight, Plus, RefreshCw } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import {
   KindChip,
@@ -27,7 +18,7 @@ import type { AssetStatus, CategoryType } from "@/types/assets";
 import { paths } from "@/routes/paths";
 import dayjs from "dayjs";
 import { compactHash } from "@/utils/format";
-import { computeListedMetrics } from "./compute-listed-metrics";
+import { computeListedMetrics } from "./utils";
 
 type SearchForm = {
   search: string;
@@ -46,8 +37,7 @@ const categoryFilters: Array<{ label: string; value: CategoryFilter }> = [
 const statusFilters: Array<{ label: string; value: StatusFilter }> = [
   { label: "Tất cả", value: "all" },
   { label: "Đang giao dịch", value: "active" },
-  { label: "Tạm dừng", value: "inactive" },
-  { label: "Nháp", value: "coming_soon" },
+  { label: "Đang xử lý", value: "coming_soon" },
 ];
 
 const PAGE_SIZE = 10;
@@ -81,14 +71,12 @@ const formatBackingValue = (value: unknown) => {
 
 const statusLabels: Record<Exclude<StatusFilter, "all">, string> = {
   active: "Đang giao dịch",
-  inactive: "Tạm dừng",
-  coming_soon: "Nháp",
+  coming_soon: "Đang xử lý",
 };
 
 const assetStatusVariant: Record<AssetStatus, BadgeVariant> = {
   active: "success",
-  inactive: "warning",
-  coming_soon: "grey",
+  coming_soon: "warning",
 };
 
 const assetTypes = [
@@ -195,7 +183,6 @@ export const ListedPropertyPage = () => {
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
-          <Button icon={<Download size={16} />}>Xuất CSV</Button>
           <Button
             aria-label="Làm mới dữ liệu"
             icon={<RefreshCw size={16} />}
@@ -359,7 +346,6 @@ export const ListedPropertyPage = () => {
                 <th className="w-[160px] px-4 py-3">Trạng thái</th>
                 <th className="w-[150px] px-4 py-3">Niêm yết</th>
                 <th className="w-[180px] px-4 py-3">Tx hash</th>
-                <th className="w-[110px] px-4 py-3 text-right"> </th>
               </tr>
             </thead>
             <tbody>
@@ -465,38 +451,6 @@ export const ListedPropertyPage = () => {
                       ) : (
                         <span className="text-xs text-text">—</span>
                       )}
-                    </td>
-                    <td className="px-4 py-4 align-middle">
-                      <div className="flex justify-end gap-2">
-                        <Button
-                          aria-label={`Xem ${asset.name}`}
-                          className="h-8! w-8! border-0! bg-transparent! p-0!"
-                          icon={<Eye aria-hidden="true" className="h-4 w-4" />}
-                          type="text"
-                        />
-                        {asset.status === "coming_soon" ? (
-                          <Button className="h-8! rounded-md! border-0! bg-bidv-gold! px-3! font-semibold! text-white!">
-                            Tiếp tục
-                          </Button>
-                        ) : (
-                          <Button
-                            aria-label={
-                              asset.status === "active"
-                                ? `Tạm dừng ${asset.name}`
-                                : `Tiếp tục giao dịch ${asset.name}`
-                            }
-                            className="h-8! w-8! border-0! bg-transparent! p-0!"
-                            icon={
-                              asset.status === "active" ? (
-                                <Pause aria-hidden="true" className="h-4 w-4" />
-                              ) : (
-                                <Play aria-hidden="true" className="h-4 w-4" />
-                              )
-                            }
-                            type="text"
-                          />
-                        )}
-                      </div>
                     </td>
                   </tr>
                 ))
