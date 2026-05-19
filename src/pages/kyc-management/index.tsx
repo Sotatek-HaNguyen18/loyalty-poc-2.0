@@ -1,47 +1,114 @@
-import type { KYCRecord } from "./types";
-import { MOCK_KYC_DATA } from "./constants/mock-kyc-data";
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 
 import { KYCDetailDrawer, KycHeader, KYCDataTable, KycFilterSection } from "./components";
-import { useMemo, useState } from "react";
+import { kycLevelParams, statusParams, type KYCRecord } from "./types";
+import { mapKYCRecord } from "./utils/kyc-record";
+
+import { useDebounce } from "@/hooks";
+import { getKYCList } from "@/services";
+
+const PAGE_SIZE = 10;
+const STATS_PAGE_SIZE = 100;
 
 export function KYCPage() {
   const [kycFilter, setKycFilter] = useState("Tất cả");
   const [statusFilter, setStatusFilter] = useState("Tất cả");
   const [searchText, setSearchText] = useState("");
+  const debouncedSearchText = useDebounce(searchText.trim(), 400);
+  const [page, setPage] = useState(1);
   const [selectedRecord, setSelectedRecord] = useState<KYCRecord | null>(null);
 
-  const filteredData = MOCK_KYC_DATA.filter((item) => {
-    const matchesKyc = kycFilter === "Tất cả" || item.level === kycFilter;
-    const matchesStatus = statusFilter === "Tất cả" || item.status === statusFilter;
-    const matchesSearch = item.name.toLowerCase().includes(searchText.toLowerCase()) || item.id.toLowerCase().includes(searchText.toLowerCase());
-    return matchesKyc && matchesStatus && matchesSearch;
+  const {
+    data: kycResponse,
+    isError,
+    isFetching,
+    isLoading,
+    refetch: refetchKYCList,
+  } = useQuery({
+    queryFn: () =>
+      getKYCList({
+        search: debouncedSearchText || undefined,
+        status: statusParams[statusFilter],
+        kycLevel: kycLevelParams[kycFilter],
+        page,
+        limit: PAGE_SIZE,
+      }),
+    queryKey: ["kyc-list", kycFilter, statusFilter, debouncedSearchText, page],
+    placeholderData: keepPreviousData,
   });
 
+  const { data: statsResponse, refetch: refetchKYCStats } = useQuery({
+    queryFn: () => getKYCList({ page: 1, limit: STATS_PAGE_SIZE }),
+    queryKey: ["kyc-list-stats"],
+    staleTime: 60_000,
+  });
+
+  const kycData = useMemo(() => (kycResponse?.items ?? []).map(mapKYCRecord), [kycResponse?.items]);
+  console.log("🚀 ~ KYCPage ~ kycData:", kycData)
+
   const stats = useMemo(() => {
+    const statsData = (statsResponse?.items ?? []).map(mapKYCRecord);
+
     return {
-      total: filteredData.length,
-      level2Plus: filteredData.filter((item) => item.level === "Level 2" || item.level === "VIP").length,
-      pending: filteredData.filter((item) => item.status === "Đang xử lý").length,
-      frozen: filteredData.filter((item) => item.status === "Frozen").length,
+      total: statsResponse?.meta.total ?? statsData.length,
+      level2Plus: statsData.filter((item) => item.level === "Level 2" || item.level === "VIP").length,
+      pending: statsData.filter((item) => item.status === "Đang xử lý").length,
+      frozen: statsData.filter((item) => item.status === "Frozen").length,
     };
-  }, [filteredData]);
+  }, [statsResponse?.items, statsResponse?.meta]);
+
+  const paginationMeta = kycResponse?.meta;
+  const currentPage = paginationMeta?.page ?? page;
+  const pageSize = paginationMeta?.limit ?? PAGE_SIZE;
+  const totalResults = paginationMeta?.total ?? 0;
+  const totalPages = paginationMeta?.totalPages ?? 1;
+
+  const handleKycFilterChange = (value: string) => {
+    setPage(1);
+    setKycFilter(value);
+  };
+
+  const handleStatusFilterChange = (value: string) => {
+    setPage(1);
+    setStatusFilter(value);
+  };
+
+  const handleSearchChange = (value: string) => {
+    setPage(1);
+    setSearchText(value);
+  };
+
+  const handleRefresh = () => {
+    void Promise.all([refetchKYCList(), refetchKYCStats()]);
+  };
 
   return (
     <div>
-      <KycHeader stats={stats} />
+      <KycHeader isRefreshing={isFetching} stats={stats} onRefresh={handleRefresh} />
 
       <div className="relative">
         <KycFilterSection
           searchText={searchText}
-          setSearchText={setSearchText}
-          setKycFilter={setKycFilter}
+          setSearchText={handleSearchChange}
+          setKycFilter={handleKycFilterChange}
           kycFilter={kycFilter}
-          setStatusFilter={setStatusFilter}
+          setStatusFilter={handleStatusFilterChange}
           statusFilter={statusFilter}
-          filteredData={filteredData}
+          filteredData={kycData}
         />
 
-        <KYCDataTable data={filteredData} onSelectRecord={setSelectedRecord} />
+        <KYCDataTable
+          currentPage={currentPage}
+          data={kycData}
+          isError={isError}
+          isLoading={isLoading}
+          pageSize={pageSize}
+          total={totalResults}
+          totalPages={totalPages}
+          onPageChange={setPage}
+          onSelectRecord={setSelectedRecord}
+        />
       </div>
 
       <KYCDetailDrawer record={selectedRecord} onClose={() => setSelectedRecord(null)} />

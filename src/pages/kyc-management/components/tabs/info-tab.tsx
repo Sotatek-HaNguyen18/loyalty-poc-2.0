@@ -1,4 +1,4 @@
-import { Check, CheckCircle2 } from "lucide-react";
+import { Check } from "lucide-react";
 import { KYC_DOCS } from "../../constants/mock-kyc-data";
 import type { KYCRecord } from "../../types";
 
@@ -23,7 +23,7 @@ export function KYCInfoTab({ record }: Props) {
           <div key={item.label} className="bg-app-bg px-3.5 py-2.5 rounded-[8px] border border-gray-100">
             <span className="text-[11px] font-normal text-text-3 block mb-0.5">{item.label}</span>
 
-            <span className="text-[13px] font-semibold text-text">{item.value}</span>
+            <span className="text-xsm font-semibold text-text">{item.value}</span>
           </div>
         ))}
       </div>
@@ -44,7 +44,7 @@ export function KYCInfoTab({ record }: Props) {
             <div key={doc.label} className="flex items-center justify-between px-3 py-2 bg-app-bg rounded-[8px] border border-gray-100">
               <div className="flex items-center gap-3">
                 <Check size={13} className="text-success" />
-                <span className="text-[13px] font-normal text-text">{doc.label}</span>
+                <span className="text-xsm font-normal text-text">{doc.label}</span>
               </div>
 
               <span className="text-[10px] font-normal text-text-3">{doc.status}</span>

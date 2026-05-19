@@ -1,3 +1,6 @@
+import type { ApiKYCRecord } from "@/services";
+import { formatCurrency, formatTokenAmount } from "../../utils/kyc-record";
+
 interface AssetCardProps {
   name: string;
   symbol: string;
@@ -33,7 +36,7 @@ function AssetCard({ name, symbol, amount, value, theme }: AssetCardProps) {
   return (
     <div className={`py-3.5! px-4! rounded-xl border flex justify-between items-center ${styles.wrapper}`}>
       <div>
-        <p className={`text-[13px] font-bold mb-0! ${styles.title}`}>
+        <p className={`text-xsm font-bold mb-0! ${styles.title}`}>
           {name} ({symbol})
         </p>
 
@@ -48,10 +51,29 @@ function AssetCard({ name, symbol, amount, value, theme }: AssetCardProps) {
 }
 
 interface Props {
-  totalValue?: string;
+  portfolio?: ApiKYCRecord["portfolio"];
 }
 
-export function PortfolioTab({ totalValue = "1.289 triệu VND" }: Props) {
+const portfolioConfig = [
+  { key: "gold", name: "Vàng", symbol: "BGT", theme: "yellow" as const },
+  { key: "real_estate", name: "Bất động sản", symbol: "BRT", theme: "blue" as const },
+  { key: "carbon", name: "Carbon Credit", symbol: "BCT", theme: "emerald" as const },
+];
+
+export function PortfolioTab({ portfolio }: Props) {
+  const totalPortfolioValue = Object.values(portfolio ?? {}).reduce((sum, item) => sum + Number(item?.totalValue ?? 0), 0);
+  const totalValue = formatCurrency(totalPortfolioValue);
+
+  const assets = portfolioConfig.map(({ key, ...config }) => {
+    const item = portfolio?.[key as keyof NonNullable<Props["portfolio"]>];
+
+    return {
+      ...config,
+      amount: formatTokenAmount(item?.balance ?? 0),
+      value: formatCurrency(item?.totalValue ?? 0),
+    };
+  });
+
   return (
     <div className="p-6 space-y-2.5">
       <div className="bg-primary-50 py-4 px-4.5 rounded-xl border-0 mb-5">
@@ -60,11 +82,9 @@ export function PortfolioTab({ totalValue = "1.289 triệu VND" }: Props) {
         <h3 className="text-[22px] font-bold! text-bidv-green mb-0! leading-8.25!">{totalValue}</h3>
       </div>
 
-      <AssetCard name="Vàng" symbol="BGT" amount="1.200" value="1.140M VND" theme="yellow" />
-
-      <AssetCard name="Bất động sản" symbol="BRT" amount="50" value="125M VND" theme="blue" />
-
-      <AssetCard name="Carbon Credit" symbol="BCT" amount="200" value="24M VND" theme="emerald" />
+      {assets.map((asset) => (
+        <AssetCard key={asset.symbol} name={asset.name} symbol={asset.symbol} amount={asset.amount} value={asset.value} theme={asset.theme} />
+      ))}
     </div>
   );
 }

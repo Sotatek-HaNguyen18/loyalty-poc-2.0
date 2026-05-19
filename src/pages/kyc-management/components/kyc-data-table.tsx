@@ -9,10 +9,27 @@ import { getStatusVariant } from "@/utils";
 
 interface KYCDataTableProps {
   data: KYCRecord[];
+  currentPage: number;
+  isError?: boolean;
+  isLoading?: boolean;
+  pageSize: number;
+  total: number;
+  totalPages: number;
+  onPageChange: (page: number) => void;
   onSelectRecord: (record: KYCRecord) => void;
 }
 
-export function KYCDataTable({ data, onSelectRecord }: KYCDataTableProps) {
+export function KYCDataTable({
+  data,
+  currentPage,
+  isError,
+  isLoading,
+  pageSize,
+  total,
+  totalPages,
+  onPageChange,
+  onSelectRecord,
+}: KYCDataTableProps) {
   const columns: ColumnsType<KYCRecord> = [
     {
       title: "NHÀ ĐẦU TƯ",
@@ -21,7 +38,7 @@ export function KYCDataTable({ data, onSelectRecord }: KYCDataTableProps) {
         <div className="flex flex-col">
           <span className="mb-0.5 font-mono text-xs text-text-2">{record.id}</span>
 
-          <span className="text-[13px] font-semibold text-text">{record.name}</span>
+          <span className="text-xsm font-semibold text-text">{record.name}</span>
 
           <span className="text-[11px] text-text-3">{record.phone}</span>
         </div>
@@ -61,15 +78,19 @@ export function KYCDataTable({ data, onSelectRecord }: KYCDataTableProps) {
       title: "ĐỊA CHỈ VÍ",
       dataIndex: "walletAddress",
       key: "walletAddress",
-      render: (text) => <span className={`font-mono text-[11.5px] ${text === "Chưa cấp" ? "text-text-3" : "text-bidv-green"}`}>{text}</span>,
+      render: (text) => (
+        <span className={`font-mono text-[11.5px] ${text === "Chưa cấp" ? "text-text-3" : "text-bidv-green"}`}>
+          {text}
+        </span>
+      ),
     },
 
     {
       title: "DANH MỤC",
-      dataIndex: "limit",
-      key: "limit",
+      dataIndex: "totalValue",
+      key: "totalValue",
       align: "right",
-      render: (text) => <span className="font-mono text-[13px] font-normal text-text">{text}</span>,
+      render: (text) => <span className="font-mono text-xsm font-normal text-text">{text}</span>,
     },
 
     {
@@ -100,28 +121,32 @@ export function KYCDataTable({ data, onSelectRecord }: KYCDataTableProps) {
               e.stopPropagation();
               onSelectRecord(record);
             }}
-            className="cursor-pointer rounded p-1.5 text-gray-400 transition-colors hover:text-emerald-600">
+            className="cursor-pointer rounded p-1.5 text-gray-400 transition-colors hover:text-emerald-600"
+          >
             <Eye size={16} />
           </button>
-
-          {record.status === "Đang xử lý" && (
-            <Button color="default" variant="filled" className="bg-bidv-green! h-7! px-2.5! py-1.25! text-xs! text-white! hover:bg-bidv-green-700!">
-              Duyệt
-            </Button>
-          )}
         </div>
       ),
     },
   ];
+
+  const rangeStart = total === 0 ? 0 : (currentPage - 1) * pageSize + 1;
+  const rangeEnd = Math.min(currentPage * pageSize, total);
+  const canGoPrev = currentPage > 1;
+  const canGoNext = currentPage < totalPages;
 
   return (
     <div className="overflow-hidden rounded-b-xl border border-app-border bg-white custom-antd-table">
       <Table
         columns={columns}
         dataSource={data}
-        rowKey="id"
+        loading={isLoading}
+        locale={{
+          emptyText: isError ? "Không tải được dữ liệu KYC." : "Không có dữ liệu KYC.",
+        }}
+        rowKey={(record) => `${record.id}-${record.walletAddress}`}
         pagination={false}
-        scroll={{ x: 'max-content' }}
+        scroll={{ x: "max-content" }}
         onRow={(record) => ({
           onClick: () => onSelectRecord(record),
           className: "group cursor-pointer",
@@ -145,13 +170,25 @@ export function KYCDataTable({ data, onSelectRecord }: KYCDataTableProps) {
 
       <div className="flex flex-col items-center justify-between gap-4 border-t border-gray-50 p-4 text-[11px] text-gray-500 sm:flex-row">
         <span>
-          Hiển thị 1-{data.length} / {data.length} nhà đầu tư
+          Hiển thị {rangeStart}-{rangeEnd} / {total} nhà đầu tư
         </span>
 
         <div className="flex gap-2">
-          <button className="rounded border border-gray-200 bg-white px-3 py-1 hover:bg-gray-50 disabled:opacity-50">Trang trước</button>
+          <Button
+            className="h-8! rounded-md! border-gray-200! text-xs!"
+            disabled={!canGoPrev || isLoading}
+            onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+          >
+            Trang trước
+          </Button>
 
-          <button className="rounded border border-gray-200 bg-white px-3 py-1 hover:bg-gray-50 disabled:opacity-50">Trang sau</button>
+          <Button
+            className="h-8! rounded-md! border-gray-200! text-xs!"
+            disabled={!canGoNext || isLoading}
+            onClick={() => onPageChange(currentPage + 1)}
+          >
+            Trang sau
+          </Button>
         </div>
       </div>
     </div>
