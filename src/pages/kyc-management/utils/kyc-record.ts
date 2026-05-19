@@ -9,10 +9,36 @@ const portfolioFormatter = new Intl.NumberFormat("vi-VN", {
 });
 
 const formatPortfolio = (portfolio: ApiKYCRecord["portfolio"]) => {
-  const total = Object.values(portfolio ?? {}).reduce((sum, value) => sum + Number(value || 0), 0);
+  const total = Object.values(portfolio ?? {}).reduce((sum, value) => sum + Number(value?.totalValue ?? 0), 0);
   if (!total) return "-";
 
   return portfolioFormatter.format(total);
+};
+
+const numberFormatter = new Intl.NumberFormat("vi-VN", {
+  maximumFractionDigits: 2,
+});
+
+const currencyFormatter = new Intl.NumberFormat("vi-VN");
+
+export const formatTokenAmount = (value?: string | number) => {
+  const numericValue = Number(value ?? 0);
+  if (!Number.isFinite(numericValue)) return "-";
+
+  return numberFormatter.format(numericValue);
+};
+
+export const formatCurrency = (value?: string | number, suffix = "VND") => {
+  const numericValue = Number(value ?? 0);
+  if (!Number.isFinite(numericValue)) return "-";
+
+  return `${currencyFormatter.format(numericValue)} ${suffix}`;
+};
+
+export const formatTransactionDate = (value?: string) => {
+  if (!value || !dayjs(value).isValid()) return "-";
+
+  return dayjs(value).format("DD/MM HH:mm");
 };
 
 const compactAddress = (address?: string) => {
@@ -64,7 +90,8 @@ const mapRiskAppetite = (riskAppetite: string): KYCRecord["riskAppetite"] => {
   return "Trung bình";
 };
 
-export const mapKYCRecord = (record: ApiKYCRecord): KYCRecord => ({
+export const mapKYCRecord = (record: ApiKYCRecord): KYCRecord => {
+  return {
   detailId: record.id || record.walletAddress || record.custodialWalletAddress || record.investor,
   id: record.investor || record.id,
   name: record.fullName || record.investor,
@@ -73,7 +100,8 @@ export const mapKYCRecord = (record: ApiKYCRecord): KYCRecord => ({
   level: mapKYCLevel(record.kycLevel),
   riskAppetite: mapRiskAppetite(record.riskAppetite),
   walletAddress: compactAddress(record.walletAddress),
-  limit: formatPortfolio(record.portfolio),
+  totalValue: formatPortfolio(record.portfolio),
   status: mapKYCStatus(record.status),
   registrationDate: dayjs(record.createdAt).isValid() ? dayjs(record.createdAt).format("DD/MM/YYYY") : "-",
-});
+};
+};

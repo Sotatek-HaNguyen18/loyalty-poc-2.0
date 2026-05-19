@@ -11,7 +11,7 @@ export interface KYCRecord {
   level: KYCLevel;
   riskAppetite: RiskAppetite;
   walletAddress: string;
-  limit: string;
+  totalValue: string;
   status: KYCStatus;
   registrationDate: string;
 }
