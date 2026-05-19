@@ -36,12 +36,12 @@ export function KYCDetailDrawer({ record, onClose }: KYCDetailDrawerProps) {
     {
       key: "portfolio",
       label: "Danh mục",
-      children: <PortfolioTab />,
+      children: <PortfolioTab portfolio={detailResponse?.portfolio} />,
     },
     {
       key: "history",
       label: "Lịch sử GD",
-      children: <TransactionHistoryTab />,
+      children: <TransactionHistoryTab transactions={detailResponse?.transactions} />,
     },
     {
       key: "actions",
@@ -57,7 +57,7 @@ export function KYCDetailDrawer({ record, onClose }: KYCDetailDrawerProps) {
       <Tabs
         defaultActiveKey="info"
         items={items}
-        className="[&_.ant-tabs-nav]:px-6 [&_.ant-tabs-nav]:mb-0 [&_.ant-tabs-tab]:text-[13px]! [&_.ant-tabs-tab]:font-semibold! [&_.ant-tabs-tab-btn]:text-text-3!  [&_.ant-tabs-tab:hover_.ant-tabs-tab-btn]:text-bidv-green! [&_.ant-tabs-tab-active_.ant-tabs-tab-btn]:text-bidv-green! [&_.ant-tabs-ink-bar]:text-bidv-green!"
+        className="[&_.ant-tabs-nav]:px-6 [&_.ant-tabs-nav]:mb-0 [&_.ant-tabs-tab]:text-xsm! [&_.ant-tabs-tab]:font-semibold! [&_.ant-tabs-tab-btn]:text-text-3!  [&_.ant-tabs-tab:hover_.ant-tabs-tab-btn]:text-bidv-green! [&_.ant-tabs-tab-active_.ant-tabs-tab-btn]:text-bidv-green! [&_.ant-tabs-ink-bar]:text-bidv-green!"
       />
     </Drawer>
   );

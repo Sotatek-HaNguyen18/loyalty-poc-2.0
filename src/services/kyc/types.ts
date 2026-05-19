@@ -21,10 +21,33 @@ export interface KYCRecord {
   custodialWalletAddress: string;
   createdAt: string;
   updatedAt: string;
+  transactions: TransactionItem[];
 }
 
+export const TransactionType = {
+  BUY: "buy",
+  SELL: "sell",
+  TRANSFER: "transfer",
+} as const;
+
+export type TransactionType = (typeof TransactionType)[keyof typeof TransactionType];
+export interface TransactionItem {
+  type: TransactionType;
+  quantity: string;
+  createdAt: string;
+  tokenCode: string;
+  txHash: string;
+  convertedValue: string;
+}
 export interface Portfolio {
-  [tokenSymbol: string]: number;
+  gold: PortfolioItem;
+  real_estate: PortfolioItem;
+  carbon: PortfolioItem;
+}
+
+export interface PortfolioItem {
+  balance: number;
+  totalValue: number;
 }
 
 export interface PaginationMeta {

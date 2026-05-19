@@ -87,8 +87,8 @@ export function KYCDataTable({
 
     {
       title: "DANH MỤC",
-      dataIndex: "limit",
-      key: "limit",
+      dataIndex: "totalValue",
+      key: "totalValue",
       align: "right",
       render: (text) => <span className="font-mono text-xsm font-normal text-text">{text}</span>,
     },
@@ -144,7 +144,7 @@ export function KYCDataTable({
         locale={{
           emptyText: isError ? "Không tải được dữ liệu KYC." : "Không có dữ liệu KYC.",
         }}
-        rowKey="id"
+        rowKey={(record) => `${record.id}-${record.walletAddress}`}
         pagination={false}
         scroll={{ x: "max-content" }}
         onRow={(record) => ({

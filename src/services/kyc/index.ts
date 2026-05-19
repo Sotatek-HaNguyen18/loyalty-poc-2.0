@@ -18,8 +18,8 @@ export async function getKYCList(params: GetKYCParams = {}): Promise<KYCListResu
   return response.data.data;
 }
 
-export async function getKYCDetail(idOrAddress: string) {
-  const response = await httpClient.get<KYCDetailResponse>(`${KYC_ENDPOINT}/${idOrAddress}`);
+export async function getKYCDetail(id: string) {
+  const response = await httpClient.get<KYCDetailResponse>(`${KYC_ENDPOINT}/${id}`);
 
   return response.data.data;
 }
