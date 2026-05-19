@@ -1,65 +1,129 @@
+import { keepPreviousData, useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
+import { Alert } from "antd";
 import { BatchHeader } from "./components/batch-header";
 import { FilterSection } from "./components/filter-section";
 import { DataTable } from "./components/data-table";
-import { useMemo, useState } from "react";
 import type { BatchRecord } from "./types";
 import { BatchDetailDrawer } from "./components/batch-detail-drawer";
-import { MOCK_DATA } from "./constants/mock-data";
+import { resolveCategoryId } from "./utils/category-filter";
+import {
+  getDefaultStatsDateRange,
+  mapDailyBatchToRecord,
+} from "./utils/map-batch";
+import { getAssetCategories, getTransactionStats } from "@/services";
+import type { CategoryType } from "@/types/assets";
+
+const STATS_DATE_RANGE = getDefaultStatsDateRange();
 
 export const BatchReconciliationPage = () => {
   const [assetFilter, setAssetFilter] = useState("Tất cả");
-  const [statusFilter, setStatusFilter] = useState("Tất cả");
   const [selectedBatch, setSelectedBatch] = useState<BatchRecord | null>(null);
 
-  const filteredData = useMemo(() => {
-    return MOCK_DATA.filter((item) => {
-      const matchesAsset =
-        assetFilter === "Tất cả" ||
-        (assetFilter === "Vàng" && item.assetType === "Gold") ||
-        (assetFilter === "BĐS" && item.assetType === "RealEstate") ||
-        (assetFilter === "Carbon" && item.assetType === "Carbon");
+  const { data: categories } = useQuery({
+    queryKey: ["asset-categories"],
+    queryFn: getAssetCategories,
+    staleTime: 5 * 60_000,
+  });
 
-      const matchesStatus = statusFilter === "Tất cả" || item.status === statusFilter;
+  const categoryId = useMemo(
+    () => resolveCategoryId(assetFilter, categories),
+    [assetFilter, categories],
+  );
 
-      return matchesAsset && matchesStatus;
-    });
-  }, [assetFilter, statusFilter]);
+  const {
+    data: statsData,
+    isError,
+    isFetching,
+    isLoading,
+    refetch,
+  } = useQuery({
+    queryKey: [
+      "transaction-stats",
+      STATS_DATE_RANGE.from,
+      STATS_DATE_RANGE.to,
+      categoryId,
+    ],
+    queryFn: () =>
+      getTransactionStats({
+        from: STATS_DATE_RANGE.from,
+        to: STATS_DATE_RANGE.to,
+        categoryId,
+      }),
+    placeholderData: keepPreviousData,
+  });
+
+  const categoryTypeById = useMemo(() => {
+    const map = new Map<string, CategoryType>();
+    for (const category of categories ?? []) {
+      map.set(category.id, category.category);
+    }
+    return map;
+  }, [categories]);
+
+  const batchData = useMemo(
+    () =>
+      (statsData?.dailyBatch ?? []).map((row) =>
+        mapDailyBatchToRecord(row, categoryTypeById.get(row.categoryId)),
+      ),
+    [statsData?.dailyBatch, categoryTypeById],
+  );
 
   const stats = useMemo(() => {
-    return filteredData.reduce(
-      (acc, curr) => {
-        acc.totalTx += curr.txCount;
-        acc.totalVnd += curr.totalVnd;
-        if (curr.status === "Đang xử lý") acc.processingCount++;
-        if (curr.coreBanking === "Diff") acc.diffCount++;
-        return acc;
-      },
-      {
-        totalTx: 0,
-        totalVnd: 0,
-        processingCount: 0,
-        diffCount: 0,
-        batchCount: filteredData.length,
-      },
-    );
-  }, [filteredData]);
+    return {
+      totalTx: batchData.reduce((sum, batch) => sum + batch.txCount, 0),
+      totalVnd: batchData.reduce((sum, batch) => sum + batch.totalVnd, 0),
+      processingCount: batchData.filter(
+        (batch) => batch.status === "Đang xử lý",
+      ).length,
+      batchCount: batchData.length,
+    };
+  }, [batchData]);
 
   return (
     <div>
-      <BatchHeader stats={stats} />
+      <BatchHeader
+        stats={stats}
+        dateRangeLabel={`${STATS_DATE_RANGE.from} → ${STATS_DATE_RANGE.to}`}
+        onRefresh={() => void refetch()}
+        isRefreshing={isFetching}
+      />
+
+      {isError && (
+        <Alert
+          type="error"
+          showIcon
+          className="mb-4"
+          message="Không tải được dữ liệu đối soát batch"
+          action={
+            <button
+              type="button"
+              onClick={() => void refetch()}
+              className="text-sm font-medium text-bidv-green"
+            >
+              Thử lại
+            </button>
+          }
+        />
+      )}
 
       <div className="relative">
         <FilterSection
           assetFilter={assetFilter}
           setAssetFilter={setAssetFilter}
-          statusFilter={statusFilter}
-          setStatusFilter={setStatusFilter}
-          filteredCount={filteredData.length}
+          filteredCount={batchData.length}
         />
-        <DataTable assetFilter={assetFilter} statusFilter={statusFilter} onRowClick={setSelectedBatch} />
+        <DataTable
+          data={batchData}
+          loading={isLoading || isFetching}
+          onRowClick={setSelectedBatch}
+        />
       </div>
 
-      <BatchDetailDrawer batch={selectedBatch} onClose={() => setSelectedBatch(null)} />
+      <BatchDetailDrawer
+        batch={selectedBatch}
+        onClose={() => setSelectedBatch(null)}
+      />
     </div>
   );
 };
