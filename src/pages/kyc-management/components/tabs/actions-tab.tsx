@@ -47,6 +47,7 @@ export function ActionsTab({ record }: Props) {
   const { message } = App.useApp();
   const queryClient = useQueryClient();
   const isFrozen = record.status === "Frozen";
+  const isPending = record.status === "Đang xử lý";
   const idOrAddress = record.detailId ?? record.id;
   const currentKYCLevel = getKYCLevelValue(record.level);
   const [selectedKYCLevel, setSelectedKYCLevel] = useState<KYCLevel>(currentKYCLevel);
@@ -83,7 +84,10 @@ export function ActionsTab({ record }: Props) {
 
   return (
     <div className="p-6 space-y-3">
-      <ActionCard title="Nâng cấp cấp KYC" description={`Hiện tại: ${record.level}. Nâng cấp để tăng hạn mức giao dịch.`}>
+      <ActionCard
+        title="Nâng cấp cấp KYC"
+        description={`Hiện tại: ${record.level}. Nâng cấp để tăng hạn mức giao dịch.`}
+      >
         <div className="flex gap-2">
           <Select
             className="flex-1"
@@ -94,7 +98,7 @@ export function ActionsTab({ record }: Props) {
 
           <Button
             className="flex-1 border-0! text-xs h-9.5! bg-bidv-green! text-white! disabled:opacity-55! disabled:cursor-not-allowed!"
-            disabled={selectedKYCLevel === currentKYCLevel}
+            disabled={selectedKYCLevel === currentKYCLevel || isPending}
             loading={kycLevelMutation.isPending}
             onClick={() => kycLevelMutation.mutate()}
           >
@@ -103,20 +107,27 @@ export function ActionsTab({ record }: Props) {
         </div>
       </ActionCard>
 
-      <ActionCard title="Đóng băng / Mở băng ví on-chain" description="Đóng băng ví sẽ ngăn tất cả giao dịch on-chain của nhà đầu tư này.">
+      <ActionCard
+        title="Đóng băng / Mở băng ví on-chain"
+        description="Đóng băng ví sẽ ngăn tất cả giao dịch on-chain của nhà đầu tư này."
+      >
         <Button
           icon={<Wallet size={12} />}
           loading={walletMutation.isPending}
           onClick={() => walletMutation.mutate()}
+          disabled={isPending}
           className={`flex items-center gap-2 font-medium! text-xs! text-white! border-0! px-2.5! py-1.25! h-6.75! ${
             isFrozen ? "bg-bidv-green!" : "bg-danger!"
-          }`}
+          } disabled:opacity-55! disabled:cursor-not-allowed!`}
         >
           {isFrozen ? "Mở băng ví (on-chain)" : "Đóng băng ví (on-chain)"}
         </Button>
       </ActionCard>
 
-      <ActionCard title="Quản lý whitelist tài sản" description="Cho phép hoặc chặn nhà đầu tư này giao dịch các tài sản đặc biệt.">
+      <ActionCard
+        title="Quản lý whitelist tài sản"
+        description="Cho phép hoặc chặn nhà đầu tư này giao dịch các tài sản đặc biệt."
+      >
         <div className="flex flex-wrap gap-2">
           {["BGT-202605", "BRT-0PK3-T15", "BCT-CP-2026", "RE-2026-001"].map((tag, idx) => (
             <Tag

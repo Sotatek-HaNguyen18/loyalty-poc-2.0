@@ -26,5 +26,6 @@ export const kycLevelParams: Record<string, string | undefined> = {
 export const statusParams: Record<string, string | undefined> = {
   "Tất cả": undefined,
   "Đang giao dịch": "TRADING",
+  "Đang xử lý": "PENDING",
   Frozen: "FROZEN",
 };

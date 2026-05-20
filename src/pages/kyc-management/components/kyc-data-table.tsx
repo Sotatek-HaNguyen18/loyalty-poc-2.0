@@ -1,10 +1,12 @@
-import { Button, Table } from "antd";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { App, Button, Table } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import { Eye } from "lucide-react";
 
 import type { KYCLevel, KYCRecord, KYCStatus, RiskAppetite } from "../types";
 
 import { StatusBadge } from "@/components/shared";
+import { approveKYC } from "@/services";
 import { getStatusVariant } from "@/utils";
 
 interface KYCDataTableProps {
@@ -30,6 +32,24 @@ export function KYCDataTable({
   onPageChange,
   onSelectRecord,
 }: KYCDataTableProps) {
+  const { message } = App.useApp();
+  const queryClient = useQueryClient();
+
+  const approveKYCMutation = useMutation({
+    mutationFn: (id: string) => approveKYC(id),
+    onSuccess: async (_, id) => {
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["kyc-list"] }),
+        queryClient.invalidateQueries({ queryKey: ["kyc-list-stats"] }),
+        queryClient.invalidateQueries({ queryKey: ["kyc-detail", id] }),
+      ]);
+      message.success("Đã duyệt KYC.");
+    },
+    onError: () => {
+      message.error("Không thể duyệt KYC.");
+    },
+  });
+
   const columns: ColumnsType<KYCRecord> = [
     {
       title: "NHÀ ĐẦU TƯ",
@@ -125,6 +145,22 @@ export function KYCDataTable({
           >
             <Eye size={16} />
           </button>
+
+          {record.status === "Đang xử lý" && (
+            <Button
+              color="default"
+              variant="filled"
+              loading={approveKYCMutation.isPending && approveKYCMutation.variables === (record.detailId ?? record.id)}
+              disabled={approveKYCMutation.isPending}
+              onClick={(e) => {
+                e.stopPropagation();
+                approveKYCMutation.mutate(record.detailId ?? record.id);
+              }}
+              className="bg-bidv-green! text-white! text-xs! h-6.75! px-2.5! py-1.25!"
+            >
+              Duyệt
+            </Button>
+          )}
         </div>
       ),
     },
