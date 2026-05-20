@@ -18,7 +18,7 @@ const kycFilters = ["Tất cả", "Level 1", "Level 2", "VIP"];
 const statusFilters = [
   { label: "Tất cả", value: "Tất cả" },
   { label: "Hoạt động", value: "Đang giao dịch" },
-  // { label: "Chờ duyệt", value: "Đang xử lý" },
+  { label: "Chờ duyệt", value: "Đang xử lý" },
   { label: "Đóng băng", value: "Frozen" },
 ];
 

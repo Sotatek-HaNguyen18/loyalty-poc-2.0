@@ -4,6 +4,7 @@ export { createAsset, getAssets } from "./assets";
 export { getOverviewSummary } from "./overview";
 export { getBatchDetail, getTransactionStats } from "./transactions";
 export {
+  approveKYC,
   freezeWallet,
   getKYCDetail,
   getKYCList,

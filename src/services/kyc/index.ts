@@ -48,3 +48,8 @@ export async function updateKYCLevel(id: string, payload: UpdateKYCLevelPayload)
   const response = await httpClient.patch(`${KYC_ENDPOINT}/${id}/level`, payload);
   return response.data;
 }
+
+export async function approveKYC(id: string) {
+  const response = await httpClient.post(`${KYC_ENDPOINT}/${id}/approve`);
+  return response.data;
+}
