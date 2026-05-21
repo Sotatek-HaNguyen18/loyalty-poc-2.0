@@ -53,8 +53,10 @@ export const LegalDocumentationStep = ({
         sellFeePercent: tokenization.sellFee,
         liquidity24h: tokenization.maxPurchaseLimit,
         totalRelease,
-        imageUrl: "string",
-        thumbnailUrl: "string",
+        imageUrl:
+          "https://cdn.confident-group.com/wp-content/uploads/2024/12/27103036/types-of-real-estate-overview-scaled.jpg",
+        thumbnailUrl:
+          "https://cdn.confident-group.com/wp-content/uploads/2024/12/27103036/types-of-real-estate-overview-scaled.jpg",
         isFeatured: false,
         metadata: {
           purity: "string",
