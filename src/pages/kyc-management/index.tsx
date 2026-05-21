@@ -45,7 +45,6 @@ export function KYCPage() {
   });
 
   const kycData = useMemo(() => (kycResponse?.items ?? []).map(mapKYCRecord), [kycResponse?.items]);
-  console.log("🚀 ~ KYCPage ~ kycData:", kycData)
 
   const stats = useMemo(() => {
     const statsData = (statsResponse?.items ?? []).map(mapKYCRecord);
