@@ -49,8 +49,10 @@ export const LegalDocumentationStep = ({
         sellFeePercent: tokenization.sellFee,
         liquidity24h: tokenization.maxPurchaseLimit,
         totalRelease,
-        imageUrl: "string",
-        thumbnailUrl: "string",
+        imageUrl:
+          "https://i.ex-cdn.com/danviet.vn/files/news/2026/02/15/68ae25aa17d73244b997ed0a_auntitled-1-093533.jpeg",
+        thumbnailUrl:
+          "https://i.ex-cdn.com/danviet.vn/files/news/2026/02/15/68ae25aa17d73244b997ed0a_auntitled-1-093533.jpeg",
         isFeatured: false,
         metadata: {
           purity: physicalGold.purity,

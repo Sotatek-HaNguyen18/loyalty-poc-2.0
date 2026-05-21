@@ -53,8 +53,8 @@ export const LegalDocumentationStep = ({
         sellFeePercent: tokenization.sellFee,
         liquidity24h: tokenization.maxPurchaseLimit,
         totalRelease,
-        imageUrl: "string",
-        thumbnailUrl: "string",
+        imageUrl: "https://cadivi.vn/vnt_upload/project/07_2020/3.jpg",
+        thumbnailUrl: "https://cadivi.vn/vnt_upload/project/07_2020/3.jpg",
         isFeatured: false,
         metadata: {
           purity: "string",
