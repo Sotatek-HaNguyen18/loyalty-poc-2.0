@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Drawer, Tabs } from "antd";
+import { useEffect } from "react";
 
 import type { KYCRecord } from "../types";
 import { mapKYCRecord } from "../utils/kyc-record";
@@ -11,17 +12,24 @@ import { ActionsTab, KYCInfoTab, PortfolioTab, TransactionHistoryTab } from "./t
 
 interface KYCDetailDrawerProps {
   record: KYCRecord | null;
+  requestKey: number;
   onClose: () => void;
 }
 
-export function KYCDetailDrawer({ record, onClose }: KYCDetailDrawerProps) {
+export function KYCDetailDrawer({ record, requestKey, onClose }: KYCDetailDrawerProps) {
   const width = useResponsiveDrawer();
   const idOrAddress = record?.detailId ?? record?.id;
-  const { data: detailResponse } = useQuery({
-    enabled: !!idOrAddress,
+  const { data: detailResponse, refetch: refetchDetail } = useQuery({
+    enabled: false,
     queryFn: () => getKYCDetail(idOrAddress!),
     queryKey: ["kyc-detail", idOrAddress],
   });
+
+  useEffect(() => {
+    if (idOrAddress) {
+      void refetchDetail();
+    }
+  }, [idOrAddress, refetchDetail, requestKey]);
 
   if (!record) return null;
 
