@@ -8,6 +8,7 @@ import { getCreateAssetErrorMessage } from "../utils";
 import { invalidateListedAssetsQueries } from "../utils/queryKeys";
 import type { CreateStepPageProps, LegalDocumentationData } from "./types";
 import { CATEGORY_TYPE } from "@/services/assets/constants";
+import { buildGoldMetadata } from "@/services/assets/metadata";
 
 export const LegalDocumentationStep = ({
   isFirstStep,
@@ -54,13 +55,7 @@ export const LegalDocumentationStep = ({
         thumbnailUrl:
           "https://i.ex-cdn.com/danviet.vn/files/news/2026/02/15/68ae25aa17d73244b997ed0a_auntitled-1-093533.jpeg",
         isFeatured: false,
-        metadata: {
-          purity: physicalGold.purity,
-          backing_ratio: physicalGold.totalWeight,
-          converted_ratio: physicalGold.totalWeight / 3.75,
-          supplier: physicalGold.supplier,
-          custodian: "BIDV",
-        },
+        metadata: buildGoldMetadata(physicalGold),
         status: "active",
       });
 
