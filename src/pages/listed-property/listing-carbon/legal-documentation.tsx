@@ -1,4 +1,5 @@
 import { CATEGORY_TYPE } from "@/services/assets/constants";
+import { buildCarbonMetadata } from "@/services/assets/metadata";
 import { createAsset } from "@/services";
 import { useCreateCarbonStore } from "@/stores/useCreateCarbonStore";
 import { useQueryClient } from "@tanstack/react-query";
@@ -56,13 +57,7 @@ export const LegalDocumentationStep = ({
         imageUrl: "https://cadivi.vn/vnt_upload/project/07_2020/3.jpg",
         thumbnailUrl: "https://cadivi.vn/vnt_upload/project/07_2020/3.jpg",
         isFeatured: false,
-        metadata: {
-          purity: "string",
-          backing_ratio: Number(carbonProject.area) || 0,
-          converted_ratio: totalIssuedCredits,
-          supplier: carbonProject.vvb,
-          custodian: "BIDV",
-        },
+        metadata: buildCarbonMetadata(carbonProject, tokenization),
         status: "active",
       });
 

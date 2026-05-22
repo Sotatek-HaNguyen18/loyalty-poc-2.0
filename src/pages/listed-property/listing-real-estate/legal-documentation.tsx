@@ -7,6 +7,7 @@ import { getCreateAssetErrorMessage } from "../utils";
 import { invalidateListedAssetsQueries } from "../utils/queryKeys";
 import type { CreateStepPageProps, LegalDocumentationData } from "./types";
 import { CATEGORY_TYPE } from "@/services/assets/constants";
+import { buildRealEstateMetadata } from "@/services/assets/metadata";
 import { createAsset } from "@/services";
 
 export const LegalDocumentationStep = ({
@@ -58,14 +59,7 @@ export const LegalDocumentationStep = ({
         thumbnailUrl:
           "https://cdn.confident-group.com/wp-content/uploads/2024/12/27103036/types-of-real-estate-overview-scaled.jpg",
         isFeatured: false,
-        metadata: {
-          purity: "string",
-          backing_ratio: Number(realEstate.floorArea) || 0,
-          converted_ratio:
-            valuationAmount > 0 ? valuationAmount / 1_000_000_000 : 0,
-          supplier: tokenization.distributionModel,
-          custodian: "BIDV",
-        },
+        metadata: buildRealEstateMetadata(realEstate, tokenization),
         status: "active",
       });
 
