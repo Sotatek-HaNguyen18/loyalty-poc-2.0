@@ -1,15 +1,7 @@
 import { Button, Dropdown } from "antd";
 
 import { shortenAddress } from "@/lib/wagmi";
-import {
-  Bell,
-  ChevronDown,
-  LogOut,
-  Menu,
-  Search,
-  Settings,
-  Wallet,
-} from "lucide-react";
+import { ChevronDown, LogOut, Menu, Wallet } from "lucide-react";
 import { useLocation } from "react-router-dom";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 
@@ -59,36 +51,7 @@ export const Header = ({
         ))}
       </div>
 
-      <label className="relative ml-4 hidden max-w-[360px] flex-1 md:block">
-        <Search className="pointer-events-none absolute left-2.5 top-1/2 h-[13px] w-[13px] -translate-y-1/2 text-text-3" />
-
-        <input
-          className="h-8 w-full rounded-md border border-transparent bg-app-bg pl-8 pr-3 text-xsm outline-none transition-colors placeholder:text-text-3 focus:bg-white focus:border-bidv-green"
-          placeholder="Tìm theo mã tài sản, tx hash, nhà đầu tư..."
-          type="search"
-        />
-      </label>
-
       <div className="ml-auto flex items-center gap-2">
-        <Button
-          aria-label="Thông báo"
-          className="relative! inline-flex! h-8! w-8! items-center! justify-center! rounded-md! border-0! bg-transparent! p-0! leading-none! text-text-2! hover:bg-app-bg! hover:text-text! cursor-pointer"
-          type="text"
-        >
-          <Bell className="h-[18px] w-[18px]" />
-          <span className="absolute right-1.5 top-1.5 h-1.5 w-1.5 rounded-full bg-bidv-gold" />
-        </Button>
-
-        <Button
-          aria-label="Cài đặt"
-          className="inline-flex! h-8! w-8! items-center! justify-center! rounded-md! border-0! bg-transparent! p-0! leading-none! text-text-2! hover:bg-app-bg! hover:text-text! cursor-pointer"
-          type="text"
-        >
-          <Settings className="h-[18px] w-[18px]" />
-        </Button>
-
-        <div className="hidden h-[22px] w-px bg-app-border md:block" />
-
         {isConnected && address ? (
           <Dropdown
             trigger={["click"]}
