@@ -18,6 +18,7 @@ export function KYCPage() {
   const debouncedSearchText = useDebounce(searchText.trim(), 400);
   const [page, setPage] = useState(1);
   const [selectedRecord, setSelectedRecord] = useState<KYCRecord | null>(null);
+  const [detailRequestKey, setDetailRequestKey] = useState(0);
 
   const {
     data: kycResponse,
@@ -82,6 +83,11 @@ export function KYCPage() {
     void Promise.all([refetchKYCList(), refetchKYCStats()]);
   };
 
+  const handleSelectRecord = (record: KYCRecord) => {
+    setSelectedRecord(record);
+    setDetailRequestKey((current) => current + 1);
+  };
+
   return (
     <div>
       <KycHeader isRefreshing={isFetching} stats={stats} onRefresh={handleRefresh} />
@@ -106,11 +112,15 @@ export function KYCPage() {
           total={totalResults}
           totalPages={totalPages}
           onPageChange={setPage}
-          onSelectRecord={setSelectedRecord}
+          onSelectRecord={handleSelectRecord}
         />
       </div>
 
-      <KYCDetailDrawer record={selectedRecord} onClose={() => setSelectedRecord(null)} />
+      <KYCDetailDrawer
+        record={selectedRecord}
+        requestKey={detailRequestKey}
+        onClose={() => setSelectedRecord(null)}
+      />
     </div>
   );
 }
