@@ -9,7 +9,7 @@ import { FormNumberInput } from "@/components/shared/form/form-number-input";
 import { FormSelect } from "@/components/shared/form/form-select";
 import { VALUATION_FIRMS } from "../constants";
 import { type ReProjectRow } from "../types";
-import { formatVnd } from "../utils";
+import { formatCompactVnd } from "@/utils";
 
 const DEFAULT_REFERENCE_DATE = new Date("2026-05-13").toISOString();
 
@@ -51,13 +51,14 @@ export const ReUpdateRow = ({ project }: ReUpdateRowProps) => {
       <tr className="border-b border-border-soft transition-colors hover:bg-bg-alt">
         <td className="px-4 py-3">
           <div className="font-mono text-xs text-text-2">{project.id}</div>
-          <div className="mt-0.5 text-[13px] font-semibold text-text">
+          <div className="mt-0.5 text-xsm font-semibold text-text">
             {project.name}
           </div>
         </td>
         <td className="px-4 py-3 text-[12px]">{project.type}</td>
-        <td className="px-4 py-3 text-right text-[13px]">
-          {formatVnd(project.price)} đ <span className="text-text-3">/BRT</span>
+        <td className="px-4 py-3 text-right text-xsm">
+          {formatCompactVnd(project.price)}{" "}
+          <span className="text-text-3">/BRT</span>
         </td>
         <td className="px-4 py-3 text-[12px]">{project.lastUpdate}</td>
         <td className="px-4 py-3 text-[12px]">{project.freq}</td>
@@ -83,7 +84,7 @@ export const ReUpdateRow = ({ project }: ReUpdateRowProps) => {
                 <form onSubmit={form.handleSubmit(handleConfirm)}>
                   <div className="grid gap-3 md:grid-cols-3">
                     <FormNumberInput
-                      hint={`Hiện tại: ${formatVnd(project.price)} đ`}
+                      hint={`Hiện tại: ${formatCompactVnd(project.price)}`}
                       label="Giá mới (VND/BRT)"
                       name="price"
                       required

@@ -1,7 +1,8 @@
 import { Button } from "antd";
 import { StatCard } from "@/components/shared";
+import { formatCompactVnd } from "@/utils";
 
-import { Filter, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 
 interface BatchHeaderProps {
   stats: {
@@ -34,9 +35,6 @@ export function BatchHeader({
           </p>
         </div>
         <div className="flex flex-wrap gap-2 sm:gap-3">
-          <Button icon={<Filter size={16} />}>
-            <span className="font-medium">Bộ lọc nâng cao</span>
-          </Button>
           <Button
             color="default"
             variant="filled"
@@ -63,11 +61,7 @@ export function BatchHeader({
         />
         <StatCard
           label="TỔNG GIÁ TRỊ VND"
-          value={
-            stats.totalVnd >= 1000000000
-              ? `${(stats.totalVnd / 1000000000).toFixed(1)} tỷ`
-              : `${(stats.totalVnd / 1000000).toFixed(1)} tr`
-          }
+          value={formatCompactVnd(stats.totalVnd)}
           subValue={dateRangeLabel}
         />
         <StatCard

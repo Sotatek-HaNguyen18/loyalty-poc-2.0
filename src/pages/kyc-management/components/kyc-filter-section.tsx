@@ -2,6 +2,7 @@ import { Search } from "lucide-react";
 import { Button, Input } from "antd";
 
 import type { KYCRecord } from "../types";
+import { formatNumber } from "@/utils";
 
 interface KycFilterSectionProps {
   searchText: string;
@@ -45,7 +46,9 @@ export function KycFilterSection({
         </div>
 
         <div className="flex sm:flex-row sm:items-center flex-col items-start gap-3">
-          <span className="text-[11.5px] font-bold text-text-3 uppercase">KYC:</span>
+          <span className="text-[11.5px] font-bold text-text-3 uppercase">
+            KYC:
+          </span>
           <div className="flex flex-wrap rounded-lg gap-1.5">
             {kycFilters.map((tab) => (
               <Button
@@ -54,7 +57,9 @@ export function KycFilterSection({
                 key={tab}
                 onClick={() => setKycFilter(tab)}
                 className={`px-2.5! py-1.25! rounded-md text-xs! h-7! font-bold transition-all ${
-                  kycFilter === tab ? "bg-bidv-green! text-white!" : "text-gray-500 hover:text-gray-900"
+                  kycFilter === tab
+                    ? "bg-bidv-green! text-white!"
+                    : "text-gray-500 hover:text-gray-900"
                 }`}
               >
                 {tab}
@@ -64,7 +69,9 @@ export function KycFilterSection({
         </div>
 
         <div className="flex sm:flex-row sm:items-center flex-col items-start gap-3">
-          <span className="text-[11.5px] font-bold text-text-3 uppercase">Trạng thái:</span>
+          <span className="text-[11.5px] font-bold text-text-3 uppercase">
+            Trạng thái:
+          </span>
           <div className="flex flex-wrap rounded-lg gap-1.5">
             {statusFilters.map((tab) => (
               <Button
@@ -73,7 +80,9 @@ export function KycFilterSection({
                 key={tab.value}
                 onClick={() => setStatusFilter(tab.value)}
                 className={`px-2.5! py-1.25! rounded-md text-xs! h-7! font-bold transition-all ${
-                  statusFilter === tab.value ? "bg-bidv-green! text-white!" : "text-gray-500 hover:text-gray-900"
+                  statusFilter === tab.value
+                    ? "bg-bidv-green! text-white!"
+                    : "text-gray-500 hover:text-gray-900"
                 }`}
               >
                 {tab.label}
@@ -83,7 +92,9 @@ export function KycFilterSection({
         </div>
       </div>
 
-      <div className="text-xs font-normal text-text-3 self-start 2xl:self-center">{filteredData.length} kết quả</div>
+      <div className="text-xs font-normal text-text-3 self-start 2xl:self-center">
+        {formatNumber(filteredData.length)} kết quả
+      </div>
     </div>
   );
 }

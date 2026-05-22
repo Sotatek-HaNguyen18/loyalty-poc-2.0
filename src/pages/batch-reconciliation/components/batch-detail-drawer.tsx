@@ -5,7 +5,7 @@ import { X } from "lucide-react";
 import type { BatchRecord, Transaction } from "../types";
 import { AssetIcon, StatusBadge } from "@/components/shared";
 import { useEffect, useMemo, useState } from "react";
-import { getStatusVariant } from "@/utils";
+import { formatCompactVnd, formatNumber, getStatusVariant } from "@/utils";
 import { getBatchDetail } from "@/services";
 import { mapBatchDetailItem } from "../utils/map-batch";
 
@@ -82,7 +82,7 @@ export function BatchDetailDrawer({ batch, onClose }: BatchDetailDrawerProps) {
       align: "right",
       render: (val) => (
         <span className="text-xs font-medium text-text font-mono">
-          {val.toLocaleString()}
+          {formatNumber(val)}
         </span>
       ),
     },
@@ -93,7 +93,7 @@ export function BatchDetailDrawer({ batch, onClose }: BatchDetailDrawerProps) {
       align: "right",
       render: (val) => (
         <span className="text-xs font-medium text-text">
-          {val.toLocaleString("vi-VN")} đ
+          {formatCompactVnd(val)}
         </span>
       ),
     },
@@ -134,12 +134,6 @@ export function BatchDetailDrawer({ batch, onClose }: BatchDetailDrawerProps) {
                   Batch {batch.date}
                 </h3>
                 <AssetIcon type={batch.assetType} />
-
-                <StatusBadge
-                  label={batch.status}
-                  variant={getStatusVariant(batch.status)}
-                  showDot
-                />
               </div>
             </div>
 
@@ -180,14 +174,9 @@ export function BatchDetailDrawer({ batch, onClose }: BatchDetailDrawerProps) {
                 <span className="text-[9px] font-bold text-gray-400 uppercase tracking-wider block mb-2">
                   TỔNG VND
                 </span>
-                <div className="flex items-baseline gap-1">
-                  <span className="text-xl font-bold text-text leading-7.5!">
-                    {Math.round(batch.totalVnd / 1000000).toLocaleString(
-                      "vi-VN",
-                    )}
-                  </span>
-                  <span className="text-xs font-bold text-gray-500">tr</span>
-                </div>
+                <span className="text-xl font-bold text-text leading-7.5!">
+                  {formatCompactVnd(batch.totalVnd)}
+                </span>
               </Card>
 
               <Card

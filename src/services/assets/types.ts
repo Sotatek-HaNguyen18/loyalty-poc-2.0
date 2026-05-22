@@ -1,4 +1,14 @@
 import type { AssetStatus, CategoryType } from "@/types/assets";
+import type {
+  CarbonAssetMetadata,
+  GoldAssetMetadata,
+  RealEstateAssetMetadata,
+} from "./metadata";
+
+export type AssetMetadata =
+  | GoldAssetMetadata
+  | RealEstateAssetMetadata
+  | CarbonAssetMetadata;
 
 export type GetAssetsParams = {
   category?: CategoryType;
@@ -26,12 +36,6 @@ export interface IListingRequest {
   imageUrl: string;
   thumbnailUrl: string;
   isFeatured: boolean;
-  metadata: {
-    purity: string;
-    backing_ratio: number;
-    converted_ratio: number;
-    supplier: string;
-    custodian: string;
-  };
+  metadata: AssetMetadata;
   status: string;
 }

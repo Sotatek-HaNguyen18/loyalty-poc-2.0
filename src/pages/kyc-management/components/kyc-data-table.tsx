@@ -7,7 +7,7 @@ import type { KYCLevel, KYCRecord, KYCStatus, RiskAppetite } from "../types";
 
 import { StatusBadge } from "@/components/shared";
 import { approveKYC } from "@/services";
-import { getStatusVariant } from "@/utils";
+import { formatNumber, getStatusVariant } from "@/utils";
 
 interface KYCDataTableProps {
   data: KYCRecord[];
@@ -56,9 +56,13 @@ export function KYCDataTable({
       key: "investor",
       render: (_, record) => (
         <div className="flex flex-col">
-          <span className="mb-0.5 font-mono text-xs text-text-2">{record.id}</span>
+          <span className="mb-0.5 font-mono text-xs text-text-2">
+            {record.id}
+          </span>
 
-          <span className="text-xsm font-semibold text-text">{record.name}</span>
+          <span className="text-xsm font-semibold text-text">
+            {record.name}
+          </span>
 
           <span className="text-[11px] text-text-3">{record.phone}</span>
         </div>
@@ -69,7 +73,9 @@ export function KYCDataTable({
       title: "CCCD",
       dataIndex: "cccd",
       key: "cccd",
-      render: (text) => <span className="font-mono text-xs font-medium text-text">{text}</span>,
+      render: (text) => (
+        <span className="font-mono text-xs font-medium text-text">{text}</span>
+      ),
     },
 
     {
@@ -79,7 +85,9 @@ export function KYCDataTable({
       render: (level: KYCLevel) => {
         const variant = getStatusVariant(level);
 
-        return <StatusBadge label={level} variant={variant} className="font-bold" />;
+        return (
+          <StatusBadge label={level} variant={variant} className="font-bold" />
+        );
       },
     },
 
@@ -90,7 +98,13 @@ export function KYCDataTable({
       render: (risk: RiskAppetite) => {
         const variant = getStatusVariant(risk);
 
-        return <StatusBadge label={risk} variant={variant} className="font-semibold" />;
+        return (
+          <StatusBadge
+            label={risk}
+            variant={variant}
+            className="font-semibold"
+          />
+        );
       },
     },
 
@@ -99,7 +113,9 @@ export function KYCDataTable({
       dataIndex: "walletAddress",
       key: "walletAddress",
       render: (text) => (
-        <span className={`font-mono text-[11.5px] ${text === "Chưa cấp" ? "text-text-3" : "text-bidv-green"}`}>
+        <span
+          className={`font-mono text-[11.5px] ${text === "Chưa cấp" ? "text-text-3" : "text-bidv-green"}`}
+        >
           {text}
         </span>
       ),
@@ -110,7 +126,9 @@ export function KYCDataTable({
       dataIndex: "totalValue",
       key: "totalValue",
       align: "right",
-      render: (text) => <span className="font-mono text-xsm font-normal text-text">{text}</span>,
+      render: (text) => (
+        <span className="font-mono text-xsm font-normal text-text">{text}</span>
+      ),
     },
 
     {
@@ -150,7 +168,10 @@ export function KYCDataTable({
             <Button
               color="default"
               variant="filled"
-              loading={approveKYCMutation.isPending && approveKYCMutation.variables === (record.detailId ?? record.id)}
+              loading={
+                approveKYCMutation.isPending &&
+                approveKYCMutation.variables === (record.detailId ?? record.id)
+              }
               disabled={approveKYCMutation.isPending}
               onClick={(e) => {
                 e.stopPropagation();
@@ -178,7 +199,9 @@ export function KYCDataTable({
         dataSource={data}
         loading={isLoading}
         locale={{
-          emptyText: isError ? "Không tải được dữ liệu KYC." : "Không có dữ liệu KYC.",
+          emptyText: isError
+            ? "Không tải được dữ liệu KYC."
+            : "Không có dữ liệu KYC.",
         }}
         rowKey={(record) => `${record.id}-${record.walletAddress}`}
         pagination={false}
@@ -206,7 +229,8 @@ export function KYCDataTable({
 
       <div className="flex flex-col items-center justify-between gap-4 border-t border-gray-50 p-4 text-[11px] text-gray-500 sm:flex-row">
         <span>
-          Hiển thị {rangeStart}-{rangeEnd} / {total} nhà đầu tư
+          Hiển thị {formatNumber(rangeStart)}–{formatNumber(rangeEnd)} /{" "}
+          {formatNumber(total)} nhà đầu tư
         </span>
 
         <div className="flex gap-2">

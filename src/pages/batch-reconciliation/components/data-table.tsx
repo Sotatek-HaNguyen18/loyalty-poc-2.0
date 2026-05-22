@@ -3,6 +3,7 @@ import type { ColumnsType } from "antd/es/table";
 import { ChevronRight } from "lucide-react";
 import type { AssetType, BatchRecord } from "../types";
 import { AssetIcon } from "@/components/shared";
+import { formatCompactVnd, formatNumber } from "@/utils";
 
 const columns: ColumnsType<BatchRecord> = [
   {
@@ -30,7 +31,7 @@ const columns: ColumnsType<BatchRecord> = [
     align: "right",
     render: (val) => (
       <span className="text-xsm font-normal text-text">
-        {val.toLocaleString()}
+        {formatNumber(val)}
       </span>
     ),
   },
@@ -42,10 +43,10 @@ const columns: ColumnsType<BatchRecord> = [
     render: (val) => (
       <span className="text-xsm font-normal text-success">
         {val > 0
-          ? `+${val.toLocaleString()}`
+          ? `+${formatNumber(val)}`
           : val === 0
             ? "—"
-            : val.toLocaleString()}
+            : formatNumber(val)}
       </span>
     ),
   },
@@ -56,11 +57,11 @@ const columns: ColumnsType<BatchRecord> = [
     align: "right",
     render: (val) => (
       <span className="text-xsm font-normal text-danger">
-        {val < 0
-          ? `${val.toLocaleString()}`
+        {val > 0
+          ? `-${formatNumber(val)}`
           : val === 0
             ? "—"
-            : `+${val.toLocaleString()}`}
+            : formatNumber(val)}
       </span>
     ),
   },
@@ -71,7 +72,7 @@ const columns: ColumnsType<BatchRecord> = [
     align: "right",
     render: (val) => (
       <span className="text-xsm font-normal text-text">
-        {val.toLocaleString()}
+        {formatNumber(val)}
       </span>
     ),
   },
@@ -82,7 +83,7 @@ const columns: ColumnsType<BatchRecord> = [
     align: "right",
     render: (val) => (
       <span className="text-xsm font-semibold text-text">
-        {val.toLocaleString()} đ
+        {formatCompactVnd(val)}
       </span>
     ),
   },
