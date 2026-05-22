@@ -17,7 +17,7 @@ import { getAssets } from "@/services";
 import type { AssetStatus, CategoryType } from "@/types/assets";
 import { paths } from "@/routes/paths";
 import dayjs from "dayjs";
-import { compactHash } from "@/utils/format";
+import { compactHash, formatNumber } from "@/utils";
 import { computeListedMetrics } from "./utils";
 import { listedAssetsQueryKeys } from "./utils/queryKeys";
 
@@ -44,11 +44,6 @@ const statusFilters: Array<{ label: string; value: StatusFilter }> = [
 const PAGE_SIZE = 10;
 const STATS_PAGE_SIZE = 100;
 
-const numberFormatter = new Intl.NumberFormat("vi-VN");
-const decimalFormatter = new Intl.NumberFormat("vi-VN", {
-  maximumFractionDigits: 2,
-});
-
 const backingUnitByCategory: Record<
   CategoryType,
   { unit1: string; unit2: string }
@@ -61,13 +56,13 @@ const backingUnitByCategory: Record<
 const formatPrice = (price: string | number, unit?: string | null) => {
   const numericPrice = Number(price);
   if (Number.isNaN(numericPrice)) return "—";
-  return `${numberFormatter.format(numericPrice)} ${unit ?? ""}`;
+  return `${formatNumber(numericPrice)} ${unit ?? ""}`.trim();
 };
 
 const formatBackingValue = (value: unknown) => {
   const numericValue = Number(value);
   if (value == null || Number.isNaN(numericValue)) return null;
-  return decimalFormatter.format(numericValue);
+  return formatNumber(numericValue, 2);
 };
 
 const statusLabels: Record<Exclude<StatusFilter, "all">, string> = {
@@ -328,7 +323,7 @@ export const ListedPropertyPage = () => {
               />
             </label>
             <span className="text-sm text-muted-text">
-              {totalResults} kết quả
+              {formatNumber(totalResults)} kết quả
             </span>
           </div>
         </div>
@@ -462,7 +457,8 @@ export const ListedPropertyPage = () => {
 
         <div className="flex flex-col gap-3 px-5 py-3 text-sm text-muted-text sm:flex-row sm:items-center sm:justify-between">
           <span>
-            Hiển thị {rangeStart}–{rangeEnd} / {totalResults} kết quả
+            Hiển thị {formatNumber(rangeStart)}–{formatNumber(rangeEnd)} /{" "}
+            {formatNumber(totalResults)} kết quả
           </span>
           <div className="flex gap-2">
             <Button

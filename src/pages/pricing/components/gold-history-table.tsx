@@ -1,7 +1,8 @@
 import { StatusBadge } from "@/components/shared";
 
 import { GOLD_HISTORY } from "../constants";
-import { formatVnd, getDeviation } from "../utils";
+import { formatCompactVnd } from "@/utils";
+import { getDeviation } from "../utils";
 
 export const GoldHistoryTable = () => {
   return (
@@ -34,10 +35,10 @@ export const GoldHistoryTable = () => {
                 >
                   <td className="px-4 py-3 text-[12.5px]">{row.time}</td>
                   <td className="px-4 py-3 text-right text-[12.5px]">
-                    {formatVnd(row.price)} đ
+                    {formatCompactVnd(row.price)}
                   </td>
                   <td className="px-4 py-3 text-right text-[12.5px] text-bidv-gold">
-                    {formatVnd(row.sjc)} đ
+                    {formatCompactVnd(row.sjc)}
                   </td>
                   <td className="px-4 py-3 text-right text-[12px] font-semibold">
                     <span className={isAlert ? "text-warn" : "text-success"}>
@@ -50,7 +51,7 @@ export const GoldHistoryTable = () => {
                   </td>
                   <td className="px-4 py-3">
                     <StatusBadge
-                      value={row.onChain ? "On-chain" : "Off-chain"}
+                      label={row.onChain ? "On-chain" : "Off-chain"}
                     />
                   </td>
                 </tr>

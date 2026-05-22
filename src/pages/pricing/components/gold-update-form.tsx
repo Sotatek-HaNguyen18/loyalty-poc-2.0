@@ -3,7 +3,7 @@ import { Link } from "lucide-react";
 import { useFormContext } from "react-hook-form";
 import { FormDatePicker } from "@/components/shared/form/form-date-picker";
 import { FormNumberInput } from "@/components/shared/form/form-number-input";
-import { formatVnd } from "../utils";
+import { formatCompactVnd } from "@/utils";
 
 const SJC_REF = 948500;
 const GOLD_DEVIATION_THRESHOLD = 2;
@@ -30,7 +30,7 @@ export const GoldUpdateForm = ({ deviation }: GoldUpdateFormProps) => {
       <form onSubmit={handleSubmit(handlePush)}>
         <div className="mb-4 grid gap-3 md:grid-cols-3">
           <FormNumberInput
-            hint={`SJC ref: ${formatVnd(SJC_REF)} đ`}
+            hint={`SJC ref: ${formatCompactVnd(SJC_REF)}`}
             label="Giá mua (VND/BGT)"
             name="goldBuy"
             required

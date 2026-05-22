@@ -1,38 +1,31 @@
 import dayjs from "dayjs";
 
 import type { ApiKYCRecord } from "@/services";
+import { formatCompactVnd, formatNumber } from "@/utils";
 import type { KYCRecord } from "../types";
 
-const portfolioFormatter = new Intl.NumberFormat("vi-VN", {
-  maximumFractionDigits: 2,
-  notation: "compact",
-});
-
 const formatPortfolio = (portfolio: ApiKYCRecord["portfolio"]) => {
-  const total = Object.values(portfolio ?? {}).reduce((sum, value) => sum + Number(value?.totalValue ?? 0), 0);
+  const total = Object.values(portfolio ?? {}).reduce(
+    (sum, value) => sum + Number(value?.totalValue ?? 0),
+    0,
+  );
   if (!total) return "-";
 
-  return portfolioFormatter.format(total);
+  return formatCompactVnd(total);
 };
-
-const numberFormatter = new Intl.NumberFormat("vi-VN", {
-  maximumFractionDigits: 2,
-});
-
-const currencyFormatter = new Intl.NumberFormat("vi-VN");
 
 export const formatTokenAmount = (value?: string | number) => {
   const numericValue = Number(value ?? 0);
   if (!Number.isFinite(numericValue)) return "-";
 
-  return numberFormatter.format(numericValue);
+  return formatNumber(numericValue, 2);
 };
 
-export const formatCurrency = (value?: string | number, suffix = "VND") => {
+export const formatCurrency = (value?: string | number) => {
   const numericValue = Number(value ?? 0);
   if (!Number.isFinite(numericValue)) return "-";
 
-  return `${currencyFormatter.format(numericValue)} ${suffix}`;
+  return formatCompactVnd(numericValue);
 };
 
 export const formatTransactionDate = (value?: string) => {
@@ -77,31 +70,40 @@ const mapKYCLevel = (level: string): KYCRecord["level"] => {
 const mapKYCStatus = (status: string): KYCRecord["status"] => {
   const normalizedStatus = status.toUpperCase();
   if (normalizedStatus === "FROZEN") return "Frozen";
-  if (normalizedStatus === "PENDING" || normalizedStatus === "PROCESSING") return "Đang xử lý";
+  if (normalizedStatus === "PENDING" || normalizedStatus === "PROCESSING")
+    return "Đang xử lý";
 
   return "Đang giao dịch";
 };
 
 const mapRiskAppetite = (riskAppetite: string): KYCRecord["riskAppetite"] => {
   const normalizedRisk = riskAppetite.toUpperCase();
-  if (normalizedRisk === "CONSERVATIVE" || normalizedRisk === "LOW") return "Thận trọng";
-  if (normalizedRisk === "AGGRESSIVE" || normalizedRisk === "HIGH") return "Năng động";
+  if (normalizedRisk === "CONSERVATIVE" || normalizedRisk === "LOW")
+    return "Thận trọng";
+  if (normalizedRisk === "AGGRESSIVE" || normalizedRisk === "HIGH")
+    return "Năng động";
 
   return "Trung bình";
 };
 
 export const mapKYCRecord = (record: ApiKYCRecord): KYCRecord => {
   return {
-  detailId: record.id || record.walletAddress || record.custodialWalletAddress || record.investor,
-  id: record.investor || record.id,
-  name: record.fullName || record.investor,
-  phone: maskPhoneNumber(record.phoneNumber),
-  cccd: maskCitizenId(record.citizenId),
-  level: mapKYCLevel(record.kycLevel),
-  riskAppetite: mapRiskAppetite(record.riskAppetite),
-  walletAddress: compactAddress(record.walletAddress),
-  totalValue: formatPortfolio(record.portfolio),
-  status: mapKYCStatus(record.status),
-  registrationDate: dayjs(record.createdAt).isValid() ? dayjs(record.createdAt).format("DD/MM/YYYY") : "-",
-};
+    detailId:
+      record.id ||
+      record.walletAddress ||
+      record.custodialWalletAddress ||
+      record.investor,
+    id: record.investor || record.id,
+    name: record.fullName || record.investor,
+    phone: maskPhoneNumber(record.phoneNumber),
+    cccd: maskCitizenId(record.citizenId),
+    level: mapKYCLevel(record.kycLevel),
+    riskAppetite: mapRiskAppetite(record.riskAppetite),
+    walletAddress: compactAddress(record.walletAddress),
+    totalValue: formatPortfolio(record.portfolio),
+    status: mapKYCStatus(record.status),
+    registrationDate: dayjs(record.createdAt).isValid()
+      ? dayjs(record.createdAt).format("DD/MM/YYYY")
+      : "-",
+  };
 };

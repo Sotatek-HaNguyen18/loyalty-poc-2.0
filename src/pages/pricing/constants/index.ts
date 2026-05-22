@@ -1,3 +1,5 @@
+import { formatCompactVnd } from "@/utils";
+
 export const GOLD_HISTORY = [
   {
     by: "admin.bidv.eth",
@@ -132,21 +134,21 @@ export const PRICING_STATS = [
     label: "Giá BGT hiện tại",
     sub: "+0,16% so với SJC tham chiếu",
     subClassName: "text-success",
-    value: "950.000 đ",
+    value: formatCompactVnd(950_000),
   },
   {
     label: "Giá BRT trung bình",
     sub: "2 dự án đang giao dịch",
     subClassName: "text-text-3",
-    value: "2,48M đ",
+    value: formatCompactVnd(2_480_000),
   },
   {
     label: "Giá BCT thị trường",
     sub: "≈ $4,92 / tCO₂e · VCS voluntary market",
     subClassName: "text-text-3",
-    value: "120.000 đ",
+    value: formatCompactVnd(120_000),
   },
-] as const;
+];
 
 export const CARBON_REFERENCE_SOURCES = [
   "XPANSIV CBL Market",

@@ -1,4 +1,5 @@
 import type { Asset, CategoryType } from "@/types/assets";
+import { formatNumber } from "@/utils";
 import { isAxiosError } from "axios";
 
 const CREATE_ASSET_ERROR_FALLBACK = "Tạo niêm yết thất bại, vui lòng thử lại";
@@ -32,11 +33,6 @@ export type ListedMetricCard = {
   subValue: string;
   unit?: string;
 };
-
-const numberFormatter = new Intl.NumberFormat("vi-VN");
-const decimalFormatter = new Intl.NumberFormat("vi-VN", {
-  maximumFractionDigits: 2,
-});
 
 const toNumber = (value: unknown): number => {
   const numeric = Number(value);
@@ -76,19 +72,19 @@ export function computeListedMetrics(assets: Asset[]): ListedMetricCard[] {
       label: "Vàng (BGT)",
       value: String(goldAssets.length),
       unit: "lô",
-      subValue: `Tổng: ${numberFormatter.format(goldGrams)}g · ${decimalFormatter.format(goldChi)} chỉ`,
+      subValue: `Tổng: ${formatNumber(goldGrams)}g · ${formatNumber(goldChi, 2)} chỉ`,
     },
     {
       label: "BĐS (BRT)",
       value: String(realEstateAssets.length),
       unit: "dự án",
-      subValue: `Tổng giá trị: ${decimalFormatter.format(realEstateValue)} tỷ VND`,
+      subValue: `Tổng giá trị: ${formatNumber(realEstateValue, 2)} tỷ VND`,
     },
     {
       label: "Carbon (BCT)",
       value: String(carbonAssets.length),
       unit: "đợt",
-      subValue: `${numberFormatter.format(carbonCredits)} tCO₂e · Vintage 2025`,
+      subValue: `${formatNumber(carbonCredits)} tCO₂e · Vintage 2025`,
     },
   ];
 }

@@ -7,14 +7,7 @@ import { KindChip } from "@/components/shared/kind-chip";
 import { StatCard } from "@/components/shared/stat-card";
 import { paths } from "@/routes/paths";
 import { getOverviewSummary, type OverviewSummary } from "@/services";
-
-const numberFormatter = new Intl.NumberFormat("vi-VN");
-const decimalFormatter = new Intl.NumberFormat("vi-VN", {
-  maximumFractionDigits: 1,
-});
-const millionFormatter = new Intl.NumberFormat("vi-VN", {
-  maximumFractionDigits: 0,
-});
+import { formatCompactVnd, formatNumber } from "@/utils";
 
 const categoryColorMap: Record<
   OverviewSummary["allocation"][number]["categoryType"],
@@ -27,8 +20,8 @@ const categoryColorMap: Record<
 
 const toSignedPercentText = (value: number | null) => {
   if (value == null) return "— so với hôm qua";
-  if (value > 0) return `+${decimalFormatter.format(value)}% so với hôm qua`;
-  return `${decimalFormatter.format(value)}% so với hôm qua`;
+  if (value > 0) return `+${formatNumber(value, 1)}% so với hôm qua`;
+  return `${formatNumber(value, 1)}% so với hôm qua`;
 };
 
 export const OverviewPage = () => {
@@ -46,8 +39,6 @@ export const OverviewPage = () => {
   const txDelta = data?.cards.transactionsToday.deltaPercentVsYesterday ?? null;
   const unreconciledBatches = data?.cards.unreconciledBatches ?? 0;
 
-  const totalOnChainInBillion = totalOnChainValueVnd / 1_000_000_000;
-
   const allocationRows = useMemo(
     () =>
       (data?.allocation ?? []).map((row) => ({
@@ -56,7 +47,7 @@ export const OverviewPage = () => {
         kind: row.categoryName,
         share: row.sharePercent,
         type: row.categoryType,
-        valueInMillions: row.valueVnd / 1_000_000,
+        valueVnd: row.valueVnd,
       })),
     [data?.allocation],
   );
@@ -104,25 +95,25 @@ export const OverviewPage = () => {
         <StatCard
           label="Tài sản đang niêm yết"
           subClassName="font-medium text-success"
-          subValue={`+${numberFormatter.format(listedAssetsDelta)} trong 7 ngày`}
-          value={numberFormatter.format(listedAssetsValue)}
+          subValue={`+${formatNumber(listedAssetsDelta)} trong 7 ngày`}
+          value={formatNumber(listedAssetsValue)}
         />
         <StatCard
           label="Tổng giá trị on-chain"
           subValue="VND · Quy đổi theo giá Oracle"
-          value={`${decimalFormatter.format(totalOnChainInBillion)} tỷ`}
+          value={formatCompactVnd(totalOnChainValueVnd)}
         />
         <StatCard
           label="Giao dịch hôm nay"
           subClassName={txSubClassName}
           subValue={toSignedPercentText(txDelta)}
-          value={numberFormatter.format(txTodayValue)}
+          value={formatNumber(txTodayValue)}
         />
         <StatCard
           label="Batch chưa đối soát"
           subClassName="font-medium text-danger"
           subValue=""
-          value={numberFormatter.format(unreconciledBatches)}
+          value={formatNumber(unreconciledBatches)}
           variant="warning"
         />
       </div>
@@ -149,10 +140,10 @@ export const OverviewPage = () => {
                       {row.count} tài sản
                     </span>
                     <span className="text-right font-mono text-sm font-semibold text-text sm:min-w-20">
-                      {millionFormatter.format(row.valueInMillions)} tr
+                      {formatCompactVnd(row.valueVnd)}
                     </span>
                     <span className="col-span-2 text-right text-sm font-semibold text-text sm:col-span-1 sm:min-w-[50px]">
-                      {decimalFormatter.format(row.share)}%
+                      {formatNumber(row.share, 1)}%
                     </span>
                   </div>
                 </div>
