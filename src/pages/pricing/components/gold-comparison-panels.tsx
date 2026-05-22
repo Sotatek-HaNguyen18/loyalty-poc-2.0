@@ -1,4 +1,4 @@
-import { formatVnd } from "../utils";
+import { formatCompactVnd } from "@/utils";
 
 const SJC_REF = 948500;
 const GOLD_DEVIATION_THRESHOLD = 2;
@@ -23,7 +23,7 @@ export const GoldComparisonPanels = ({
       >
         <div className="mb-1 text-[11px] text-text-3">Giá BGT trên sàn</div>
         <div className="font-display text-[18px] font-bold! text-bidv-green sm:text-[20px]">
-          {formatVnd(goldBuy)} đ
+          {formatCompactVnd(goldBuy)}
         </div>
         <div className="mt-0.5 text-[11px] text-text-3">/ BGT (= 0,01 chỉ)</div>
       </div>
@@ -34,7 +34,7 @@ export const GoldComparisonPanels = ({
       >
         <div className="mb-1 text-[11px] text-text-3">Giá SJC tham chiếu</div>
         <div className="font-display text-[18px] font-bold! text-bidv-gold sm:text-[20px]">
-          {formatVnd(SJC_REF)} đ
+          {formatCompactVnd(SJC_REF)}
         </div>
         <div className="mt-0.5 text-[11px] text-text-3">
           Cập nhật 09:00 hôm nay

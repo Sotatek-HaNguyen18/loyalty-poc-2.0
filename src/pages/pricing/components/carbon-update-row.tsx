@@ -9,7 +9,8 @@ import { FormNumberInput } from "@/components/shared/form/form-number-input";
 import { FormSelect } from "@/components/shared/form/form-select";
 import { CARBON_REFERENCE_SOURCES } from "../constants";
 import { type CcProjectRow } from "../types";
-import { formatVnd, getDeviation } from "../utils";
+import { formatCompactVnd } from "@/utils";
+import { getDeviation } from "../utils";
 
 const CARBON_DEVIATION_THRESHOLD = 5;
 const DEFAULT_REFERENCE_DATE = new Date("2026-05-13").toISOString();
@@ -57,7 +58,7 @@ export const CarbonUpdateRow = ({ project }: CarbonUpdateRowProps) => {
       <tr className="border-b border-border-soft transition-colors hover:bg-bg-alt">
         <td className="px-4 py-3">
           <div className="font-mono text-xs text-text-2">{project.id}</div>
-          <div className="mt-0.5 text-[13px] font-semibold text-text">
+          <div className="mt-0.5 text-xsm font-semibold text-text">
             {project.name}
           </div>
           <div className="text-[11px] text-text-3">{project.type}</div>
@@ -68,10 +69,10 @@ export const CarbonUpdateRow = ({ project }: CarbonUpdateRowProps) => {
           </span>
         </td>
         <td className="px-4 py-3 text-right text-[12.5px]">
-          {formatVnd(project.price)} đ
+          {formatCompactVnd(project.price)}
         </td>
         <td className="px-4 py-3 text-right text-[12.5px] text-success">
-          {formatVnd(project.ref)} đ
+          {formatCompactVnd(project.ref)}
         </td>
         <td className="px-4 py-3 text-right text-[12px] font-semibold">
           <span
@@ -107,7 +108,7 @@ export const CarbonUpdateRow = ({ project }: CarbonUpdateRowProps) => {
                 <form onSubmit={form.handleSubmit(handlePush)}>
                   <div className="grid gap-3 md:grid-cols-3">
                     <FormNumberInput
-                      hint={`Tham chiếu thị trường: ${formatVnd(project.ref)} đ`}
+                      hint={`Tham chiếu thị trường: ${formatCompactVnd(project.ref)}`}
                       label="Giá mới (VND/BCT)"
                       name="price"
                       required

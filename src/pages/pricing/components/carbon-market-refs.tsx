@@ -1,5 +1,5 @@
 import { CC_MARKET_REFS } from "../constants";
-import { formatVnd } from "../utils";
+import { formatCompactVnd } from "@/utils";
 
 export const CarbonMarketRefs = () => {
   return (
@@ -19,7 +19,7 @@ export const CarbonMarketRefs = () => {
             className="font-display text-[15px] font-bold!"
             style={{ color: reference.color }}
           >
-            {formatVnd(reference.ref)} đ
+            {formatCompactVnd(reference.ref)}
           </div>
         </article>
       ))}
