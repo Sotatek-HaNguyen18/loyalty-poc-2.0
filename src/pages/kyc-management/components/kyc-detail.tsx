@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Drawer, Tabs } from "antd";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import type { KYCRecord } from "../types";
 import { mapKYCRecord } from "../utils/kyc-record";
@@ -20,15 +20,21 @@ export function KYCDetailDrawer({ record, requestKey, onClose }: KYCDetailDrawer
   const width = useResponsiveDrawer();
   const idOrAddress = record?.detailId ?? record?.id;
   const { data: detailResponse, refetch: refetchDetail } = useQuery({
-    enabled: false,
+    enabled: !!idOrAddress,
     queryFn: () => getKYCDetail(idOrAddress!),
     queryKey: ["kyc-detail", idOrAddress],
   });
 
+  const previousRequestKey = useRef(requestKey);
+
   useEffect(() => {
-    if (idOrAddress) {
+    if (!idOrAddress) return;
+
+    if (previousRequestKey.current !== requestKey) {
       void refetchDetail();
     }
+
+    previousRequestKey.current = requestKey;
   }, [idOrAddress, refetchDetail, requestKey]);
 
   if (!record) return null;
@@ -54,12 +60,22 @@ export function KYCDetailDrawer({ record, requestKey, onClose }: KYCDetailDrawer
     {
       key: "actions",
       label: "Thao tác",
-      children: <ActionsTab key={`${detailRecord.detailId ?? detailRecord.id}-${detailRecord.level}`} record={detailRecord} />,
+      children: (
+        <ActionsTab key={`${detailRecord.detailId ?? detailRecord.id}-${detailRecord.level}`} record={detailRecord} />
+      ),
     },
   ];
 
   return (
-    <Drawer title={null} placement="right" onClose={onClose} open={!!record} size={width} closable={false} styles={{ body: { padding: 0 } }}>
+    <Drawer
+      title={null}
+      placement="right"
+      onClose={onClose}
+      open={!!record}
+      size={width}
+      closable={false}
+      styles={{ body: { padding: 0 } }}
+    >
       <DrawerHeader record={detailRecord} onClose={onClose} />
 
       <Tabs
