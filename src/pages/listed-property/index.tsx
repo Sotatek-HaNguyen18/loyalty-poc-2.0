@@ -438,7 +438,7 @@ export const ListedPropertyPage = () => {
                       {asset.txHash ? (
                         <a
                           className="font-mono! text-xs! text-bidv-green! underline! decoration-dotted!"
-                          href={`https://polygonscan.com/tx/${asset.txHash}`}
+                          href={`https://sepolia.arbiscan.io/tx/${asset.txHash}`}
                           rel="noreferrer"
                           target="_blank"
                         >
